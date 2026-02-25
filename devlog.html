@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>lab-researcher / experiments &#8212; GitHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gh-bg:          #ffffff;
+  --gh-bg-subtle:   #f6f8fa;
+  --gh-bg-inset:    #f6f8fa;
+  --gh-border:      #d0d7de;
+  --gh-border-muted:#d8dee4;
+  --gh-header-bg:   #24292f;
+  --gh-header-fg:   rgba(255,255,255,0.7);
+  --gh-fg:          #1f2328;
+  --gh-fg-muted:    #636e7b;
+  --gh-fg-subtle:   #6e7781;
+  --gh-fg-link:     #0969da;
+  --gh-fg-danger:   #cf222e;
+  --gh-fg-success:  #1a7f37;
+  --gh-fg-attention:#9a6700;
+  --gh-fg-done:     #8250df;
+  --gh-accent:      #0969da;
+  --gh-accent-em:   #0550ae;
+  --gh-btn-bg:      #f6f8fa;
+  --gh-btn-border:  rgba(31,35,40,0.15);
+  --gh-btn-shadow:  rgba(31,35,40,0.04);
+  --gh-btn-pri-bg:  #1f883d;
+  --gh-grass-0:     #ebedf0;
+  --gh-grass-1:     #9be9a8;
+  --gh-grass-2:     #40c463;
+  --gh-grass-3:     #30a14e;
+  --gh-grass-4:     #216e39;
+  --gh-open:        #1a7f37;
+  --gh-closed:      #cf222e;
+  --gh-merged:      #8250df;
+  --radius:         6px;
+  --radius-sm:      4px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--gh-bg); color: var(--gh-fg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.5; min-height: 100vh; }
+a { color: var(--gh-fg-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.gh-nav { background: var(--gh-header-bg); height: 48px; padding: 0 16px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.gh-nav-logo { color: #fff; font-size: 20px; flex-shrink: 0; }
+.gh-nav-search { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm); padding: 5px 10px; color: rgba(255,255,255,0.5); font-size: 13px; width: 280px; display: flex; align-items: center; gap: 8px; cursor: text; }
+.gh-nav-links { display: flex; gap: 0; margin-left: 8px; }
+.gh-nav-link { color: var(--gh-header-fg); font-size: 14px; font-weight: 600; padding: 4px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: color 0.12s, background 0.12s; }
+.gh-nav-link:hover { color: #fff; background: rgba(255,255,255,0.08); }
+.gh-nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.gh-nav-btn { color: var(--gh-header-fg); font-size: 13px; padding: 4px 8px; border-radius: var(--radius-sm); cursor: pointer; transition: color 0.12s; }
+.gh-nav-btn:hover { color: #fff; }
+.gh-nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: #556; border: 2px solid rgba(255,255,255,0.2); font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; }
+.repo-header-bar { background: var(--gh-bg); border-bottom: 1px solid var(--gh-border); padding: 16px 32px 0; }
+.repo-breadcrumb { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; font-size: 20px; flex-wrap: wrap; }
+.repo-breadcrumb .owner { color: var(--gh-fg-link); font-weight: 400; }
+.repo-breadcrumb .sep { color: var(--gh-fg-muted); font-weight: 300; }
+.repo-breadcrumb .repo-name { color: var(--gh-fg-link); font-weight: 600; }
+.repo-badge { font-size: 11px; font-weight: 500; padding: 2px 8px; border: 1px solid var(--gh-border); border-radius: 20px; color: var(--gh-fg-muted); margin-left: 4px; vertical-align: middle; }
+.repo-desc { color: var(--gh-fg-muted); font-size: 14px; margin-bottom: 12px; margin-top: 4px; }
+.repo-actions { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.gh-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; font-size: 13px; font-weight: 500; border-radius: var(--radius); border: 1px solid var(--gh-btn-border); background: var(--gh-btn-bg); color: var(--gh-fg); cursor: pointer; transition: background 0.12s, border-color 0.12s; box-shadow: 0 1px 0 var(--gh-btn-shadow); white-space: nowrap; }
+.gh-btn:hover { background: #f3f4f6; border-color: rgba(31,35,40,0.2); }
+.gh-btn-count { background: rgba(31,35,40,0.08); border-radius: 20px; padding: 0 6px; font-size: 12px; font-weight: 600; min-width: 20px; text-align: center; }
+.gh-btn-primary { background: var(--gh-btn-pri-bg); border-color: rgba(31,35,40,0.15); color: #fff; }
+.gh-btn-primary:hover { background: #1c7d37; }
+.gh-btn-primary .gh-btn-count { background: rgba(255,255,255,0.2); color: #fff; }
+.repo-tabs { display: flex; gap: 0; overflow-x: auto; }
+.repo-tab { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 14px; color: var(--gh-fg-muted); border-bottom: 2px solid transparent; cursor: pointer; transition: color 0.12s, border-color 0.12s; white-space: nowrap; }
+.repo-tab:hover { color: var(--gh-fg); border-color: var(--gh-border); }
+.repo-tab.active { color: var(--gh-fg); border-color: #fd8c73; font-weight: 600; }
+.repo-tab-count { background: rgba(31,35,40,0.08); border-radius: 20px; padding: 1px 7px; font-size: 11px; font-weight: 600; }
+.gh-main { max-width: 1280px; margin: 0 auto; padding: 24px 32px; display: grid; grid-template-columns: 1fr 296px; gap: 24px; }
+@media (max-width: 768px) { .gh-main { grid-template-columns: 1fr; padding: 16px; } .gh-nav-search { display: none; } .repo-sidebar { display: none; } }
+.file-browser { border: 1px solid var(--gh-border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
+.file-browser-header { background: var(--gh-bg-subtle); padding: 8px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--gh-border); flex-wrap: wrap; }
+.branch-selector { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border: 1px solid var(--gh-border); border-radius: var(--radius); background: var(--gh-bg); font-size: 13px; font-weight: 600; cursor: pointer; }
+.branch-selector:hover { background: var(--gh-bg-subtle); }
+.file-browser-meta { font-size: 13px; color: var(--gh-fg-muted); margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.commit-msg { font-size: 13px; color: var(--gh-fg); }
+.commit-hash { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gh-fg-link); background: var(--gh-bg-subtle); border: 1px solid var(--gh-border); border-radius: var(--radius-sm); padding: 2px 6px; }
+.file-row { display: grid; grid-template-columns: 20px 1fr 1fr auto; gap: 12px; align-items: center; padding: 7px 16px; border-bottom: 1px solid var(--gh-border-muted); font-size: 14px; transition: background 0.08s; }
+.file-row:last-child { border-bottom: none; }
+.file-row:hover { background: var(--gh-bg-subtle); }
+.file-icon { color: var(--gh-fg-muted); font-size: 16px; }
+.file-name { color: var(--gh-fg-link); font-weight: 400; }
+.file-name:hover { text-decoration: underline; cursor: pointer; }
+.file-name.folder { color: var(--gh-fg-link); }
+.file-commit { font-size: 13px; color: var(--gh-fg-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-date { font-size: 12px; color: var(--gh-fg-muted); white-space: nowrap; }
+.readme-box { border: 1px solid var(--gh-border); border-radius: var(--radius); overflow: hidden; }
+.readme-header { background: var(--gh-bg-subtle); padding: 8px 16px; border-bottom: 1px solid var(--gh-border); display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+.readme-body { padding: 32px 40px; line-height: 1.6; }
+.md-h1 { font-size: 28px; font-weight: 600; border-bottom: 1px solid var(--gh-border); padding-bottom: 10px; margin-bottom: 20px; margin-top: 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.md-h2 { font-size: 20px; font-weight: 600; border-bottom: 1px solid var(--gh-border); padding-bottom: 6px; margin-bottom: 14px; margin-top: 28px; }
+.md-h3 { font-size: 16px; font-weight: 600; margin-bottom: 10px; margin-top: 20px; }
+.md-p { margin-bottom: 14px; color: var(--gh-fg); }
+.md-code { font-family: 'JetBrains Mono', monospace; font-size: 85%; background: rgba(175,184,193,0.2); padding: 2px 5px; border-radius: 4px; color: var(--gh-fg); }
+.md-pre { background: var(--gh-bg-subtle); border: 1px solid var(--gh-border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.7; }
+.md-pre .c { color: var(--gh-fg-muted); }
+.md-pre .k { color: #cf222e; }
+.md-pre .s { color: #0a3069; }
+.md-pre .n { color: #953800; }
+.md-pre .ok { color: var(--gh-fg-success); }
+.md-pre .err { color: var(--gh-fg-danger); }
+.md-ul, .md-ol { padding-left: 24px; margin-bottom: 14px; }
+.md-li { margin-bottom: 4px; }
+.md-blockquote { border-left: 4px solid var(--gh-border); padding: 4px 16px; color: var(--gh-fg-muted); margin-bottom: 14px; font-style: italic; }
+.md-hr { border: none; border-top: 1px solid var(--gh-border); margin: 24px 0; }
+.md-table { border-collapse: collapse; width: 100%; margin-bottom: 16px; font-size: 14px; }
+.md-table th { background: var(--gh-bg-subtle); padding: 8px 16px; border: 1px solid var(--gh-border); font-weight: 600; text-align: left; }
+.md-table td { padding: 8px 16px; border: 1px solid var(--gh-border); }
+.md-table tr:nth-child(even) td { background: var(--gh-bg-subtle); }
+.md-a { color: var(--gh-fg-link); }
+.md-a:hover { text-decoration: underline; }
+.badges { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 16px; }
+.badge { display: inline-flex; align-items: center; border-radius: 4px; overflow: hidden; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; height: 20px; }
+.badge-label { background: #555; color: #fff; padding: 0 7px; height: 100%; display: flex; align-items: center; }
+.badge-value { padding: 0 7px; height: 100%; display: flex; align-items: center; color: #fff; }
+.bv-green { background: #4c1; }
+.bv-yellow { background: #e7b416; }
+.bv-red { background: #e05d44; }
+.bv-blue { background: #007ec6; }
+.bv-purple { background: #9b59b6; }
+.bv-grey { background: #9f9f9f; }
+.bv-orange { background: #e05d44; }
+.exp-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.exp-card { border: 1px solid var(--gh-border); border-radius: var(--radius); padding: 14px 16px; background: var(--gh-bg); transition: border-color 0.12s, box-shadow 0.12s; cursor: pointer; position: relative; overflow: hidden; }
+.exp-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.exp-card:hover { border-color: var(--gh-accent); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.exp-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.exp-card-emoji { font-size: 22px; line-height: 1; }
+.exp-card-status { font-size: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 600; padding: 2px 7px; border-radius: 20px; border: 1px solid; }
+.es-run { color: var(--gh-open); border-color: #1a7f37; background: rgba(26,127,55,0.08); }
+.es-warn { color: var(--gh-fg-attention); border-color: #9a6700; background: rgba(154,103,0,0.08); }
+.es-closed { color: var(--gh-closed); border-color: #cf222e; background: rgba(207,34,46,0.08); }
+.es-draft { color: var(--gh-fg-muted); border-color: var(--gh-border); background: var(--gh-bg-subtle); }
+.exp-card-name { font-size: 14px; font-weight: 600; color: var(--gh-fg-link); margin-bottom: 5px; }
+.exp-card-desc { font-size: 12px; color: var(--gh-fg-muted); line-height: 1.5; margin-bottom: 10px; }
+.exp-card-note { font-size: 11px; color: var(--gh-fg-attention); font-style: italic; margin-top: -4px; margin-bottom: 8px; }
+.exp-card-foot { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--gh-fg-muted); }
+.lang-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.exp-card-date { margin-left: auto; }
+.exp-card:nth-child(1)::before { background: #cf222e; }
+.exp-card:nth-child(2)::before { background: #0969da; }
+.exp-card:nth-child(3)::before { background: #1a7f37; }
+.exp-card:nth-child(4)::before { background: #8250df; }
+.exp-card:nth-child(5)::before { background: #9a6700; }
+.exp-card:nth-child(6)::before { background: #0969da; }
+.exp-card:nth-child(7)::before { background: #cf222e; }
+.exp-card:nth-child(8)::before { background: #1a7f37; }
+.exp-card:nth-child(9)::before { background: #8250df; }
+.contrib-section { border: 1px solid var(--gh-border); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; }
+.contrib-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px; }
+.contrib-count { font-weight: 600; }
+.contrib-sub { color: var(--gh-fg-muted); }
+.contrib-graph { display: grid; grid-template-columns: repeat(52, 1fr); grid-template-rows: repeat(7, 1fr); grid-auto-flow: column; gap: 2px; margin-bottom: 8px; }
+.contrib-cell { width: 100%; aspect-ratio: 1; border-radius: 2px; background: var(--gh-grass-0); transition: opacity 0.1s; cursor: default; }
+.contrib-cell:hover { outline: 1px solid rgba(0,0,0,0.3); }
+.g1 { background: var(--gh-grass-1); }
+.g2 { background: var(--gh-grass-2); }
+.g3 { background: var(--gh-grass-3); }
+.g4 { background: var(--gh-grass-4); }
+.contrib-legend { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--gh-fg-muted); justify-content: flex-end; }
+.legend-cell { width: 10px; height: 10px; border-radius: 2px; }
+.repo-sidebar {}
+.sidebar-section { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--gh-border); }
+.sidebar-section:last-child { border-bottom: none; }
+.sidebar-h { font-size: 14px; font-weight: 600; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+.sidebar-h-edit { font-size: 12px; font-weight: 400; color: var(--gh-fg-muted); cursor: pointer; }
+.sidebar-desc { font-size: 14px; color: var(--gh-fg-muted); margin-bottom: 10px; line-height: 1.5; }
+.sidebar-tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; background: rgba(9,105,218,0.1); color: var(--gh-fg-link); border-radius: 20px; font-size: 12px; font-weight: 500; margin: 2px; cursor: pointer; transition: background 0.1s; }
+.sidebar-tag:hover { background: rgba(9,105,218,0.18); }
+.sidebar-stat { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--gh-fg-muted); margin-bottom: 8px; cursor: pointer; }
+.sidebar-stat:hover { color: var(--gh-fg); }
+.sidebar-stat .count { font-weight: 600; color: var(--gh-fg); }
+.lang-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; gap: 2px; margin-bottom: 10px; }
+.lang-segment { height: 100%; border-radius: 2px; transition: opacity 0.12s; cursor: default; }
+.lang-segment:hover { opacity: 0.8; }
+.lang-list { display: flex; flex-direction: column; gap: 6px; }
+.lang-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.lang-pct { margin-left: auto; color: var(--gh-fg-muted); font-size: 12px; }
+.issues-panel { border: 1px solid var(--gh-border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
+.issues-header { background: var(--gh-bg-subtle); padding: 8px 16px; border-bottom: 1px solid var(--gh-border); display: flex; align-items: center; gap: 16px; font-size: 14px; }
+.issues-tab { color: var(--gh-fg-muted); cursor: pointer; padding: 4px 0; border-bottom: 2px solid transparent; display: flex; align-items: center; gap: 5px; }
+.issues-tab.active { color: var(--gh-fg); font-weight: 600; border-color: #fd8c73; }
+.issue-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--gh-border-muted); transition: background 0.08s; cursor: pointer; }
+.issue-row:last-child { border-bottom: none; }
+.issue-row:hover { background: var(--gh-bg-subtle); }
+.issue-icon { margin-top: 2px; flex-shrink: 0; font-size: 16px; }
+.issue-content { flex: 1; min-width: 0; }
+.issue-title { font-size: 14px; font-weight: 500; color: var(--gh-fg); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.issue-meta { font-size: 12px; color: var(--gh-fg-muted); display: flex; gap: 8px; flex-wrap: wrap; }
+.issue-label { padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; border: 1px solid transparent; }
+.lbl-bug { background: #FFEBE9; color: #cf222e; border-color: rgba(207,34,46,0.3); }
+.lbl-wont { background: #F0EFF9; color: #8250df; border-color: rgba(130,80,223,0.3); }
+.lbl-feat { background: #DDF4FF; color: #0969da; border-color: rgba(9,105,218,0.3); }
+.lbl-quest { background: #FAEEF8; color: #8250df; border-color: rgba(130,80,223,0.3); }
+.lbl-help { background: #228B22; color: #fff; border-color: transparent; }
+.lbl-research { background: #FFF3CD; color: #9a6700; border-color: rgba(154,103,0,0.3); }
+.lbl-exist { background: #DFF0D8; color: #1a7f37; border-color: rgba(26,127,55,0.3); }
+.reveal { opacity: 0; transform: translateY(12px); transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.34,1.2,0.64,1); }
+.reveal.in { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+<nav class="gh-nav">
+<div class="gh-nav-logo">&#8859;</div>
+<div class="gh-nav-search"><span style="opacity:0.5;">&#128269;</span><span>Search or jump to...</span><span style="margin-left:auto;font-size:11px;background:rgba(255,255,255,0.1);padding:1px 6px;border-radius:3px;border:1px solid rgba(255,255,255,0.2);">&#8984;K</span></div>
+<div class="gh-nav-links">
+<div class="gh-nav-link">Pull requests</div>
+<div class="gh-nav-link">Issues</div>
+<div class="gh-nav-link">Codespaces</div>
+<div class="gh-nav-link">Marketplace</div>
+</div>
+<div class="gh-nav-right">
+<a class="gh-nav-btn" href="./index.html" style="text-decoration:none;">&#129514; Gallery</a>
+<div class="gh-nav-btn">&#65291; &#9662;</div>
+<div class="gh-nav-avatar">&#129514;</div>
+</div>
+</nav>
+
+<div class="repo-header-bar">
+<div class="repo-breadcrumb">
+<span class="owner">lab-researcher</span>
+<span class="sep">/</span>
+<span class="repo-name">experiments</span>
+<span class="repo-badge">Public</span>
+</div>
+<div class="repo-desc">個人的な実験の記録。動くものもある。動かないものもある。なぜ動くのかわからないものが一番多い。</div>
+<div class="repo-actions">
+<button class="gh-btn">&#128204; Pin</button>
+<button class="gh-btn">&#9881; Manage topics</button>
+<button class="gh-btn">&#128065; Watch <span class="gh-btn-count">3</span></button>
+<button class="gh-btn">&#127860; Fork <span class="gh-btn-count">1</span></button>
+<button class="gh-btn gh-btn-primary">&#11088; Star <span class="gh-btn-count">12</span></button>
+</div>
+<div class="repo-tabs">
+<div class="repo-tab active">&lt;/&gt; Code</div>
+<div class="repo-tab">&#9888; Issues <span class="repo-tab-count">47</span></div>
+<div class="repo-tab">&#8644; Pull requests <span class="repo-tab-count">2</span></div>
+<div class="repo-tab">&#9889; Actions</div>
+<div class="repo-tab">&#128202; Projects <span class="repo-tab-count">1</span></div>
+<div class="repo-tab">&#128274; Security</div>
+<div class="repo-tab">&#12316; Insights</div>
+<div class="repo-tab">&#9881; Settings</div>
+</div>
+</div>
+
+<div class="gh-main">
+<div class="gh-content">
+
+<div class="file-browser reveal">
+<div class="file-browser-header">
+<div class="branch-selector">&#9095; main &#9662;</div>
+<div style="font-size:13px;color:var(--gh-fg-muted);"><strong style="color:var(--gh-fg);">lab-researcher</strong>&nbsp;<span class="commit-msg">なんか動いたので一旦push</span></div>
+<div class="file-browser-meta"><span class="commit-hash">a3f8c91</span><span>3 hours ago</span><span>&#128221; 847 commits</span></div>
+</div>
+<div class="file-row"><span class="file-icon">&#128193;</span><span class="file-name folder">失敗実験</span><span class="file-commit">いつか見直す（見直さない）</span><span class="file-date">3 years ago</span></div>
+<div class="file-row"><span class="file-icon">&#128193;</span><span class="file-name folder">まあまあ成功</span><span class="file-commit">定義：「エラーが出ない」</span><span class="file-date">2 months ago</span></div>
+<div class="file-row"><span class="file-icon">&#128193;</span><span class="file-name folder">EXP007_praise_automaton</span><span class="file-commit">精度43%のまま本番投入</span><span class="file-date">last week</span></div>
+<div class="file-row"><span class="file-icon">&#128193;</span><span class="file-name folder">tmp_DO_NOT_DELETE</span><span class="file-commit">何が入ってるか覚えていない</span><span class="file-date">5 years ago</span></div>
+<div class="file-row"><span class="file-icon">&#128196;</span><span class="file-name">.gitignore</span><span class="file-commit">TODO.txtを除外した（大きすぎて）</span><span class="file-date">2 years ago</span></div>
+<div class="file-row"><span class="file-icon">&#128196;</span><span class="file-name">LICENSE</span><span class="file-commit">MIT（意味はよくわかっていない）</span><span class="file-date">5 years ago</span></div>
+<div class="file-row"><span class="file-icon">&#128196;</span><span class="file-name">README.md</span><span class="file-commit">なんか動いたので一旦push</span><span class="file-date">3 hours ago</span></div>
+<div class="file-row"><span class="file-icon">&#128196;</span><span class="file-name">config_final_v3_FINAL2.cfg</span><span class="file-commit">これが正しいconfigのはず</span><span class="file-date">yesterday</span></div>
+<div class="file-row"><span class="file-icon">&#128196;</span><span class="file-name">why_does_this_work.txt</span><span class="file-commit">（空のファイル）</span><span class="file-date">1 year ago</span></div>
+</div>
+
+<div class="readme-box reveal">
+<div class="readme-header">&#128196; README.md<span style="margin-left:auto;display:flex;gap:8px;font-size:12px;font-weight:400;color:var(--gh-fg-muted);"><span style="cursor:pointer;">&#9998; Edit</span><span style="cursor:pointer;">&#8943;</span></span></div>
+<div class="readme-body">
+<div class="md-h1">&#9879;&#65039; experiments</div>
+<div class="badges">
+<span class="badge"><span class="badge-label">build</span><span class="badge-value bv-yellow">unknown</span></span>
+<span class="badge"><span class="badge-label">tests</span><span class="badge-value bv-orange">lol</span></span>
+<span class="badge"><span class="badge-label">coverage</span><span class="badge-value bv-red">43%</span></span>
+<span class="badge"><span class="badge-label">license</span><span class="badge-value bv-blue">MIT (たぶん)</span></span>
+<span class="badge"><span class="badge-label">last commit</span><span class="badge-value bv-green">3 hours ago</span></span>
+<span class="badge"><span class="badge-label">motivation</span><span class="badge-value bv-yellow">oscillating</span></span>
+<span class="badge"><span class="badge-label">sleep debt</span><span class="badge-value bv-red">OVERFLOW</span></span>
+<span class="badge"><span class="badge-label">coffee</span><span class="badge-value bv-orange">CRITICAL</span></span>
+<span class="badge"><span class="badge-label">EXP003 status</span><span class="badge-value bv-purple">escaped</span></span>
+</div>
+<div class="md-p">個人的な実験の置き場。ゲーム、AI実験、占い、ちょっとしたツールなど。動くものもある。動かないものもある。なぜ動くのかわからないものが一番多い。</div>
+<div class="md-blockquote">&#9888;&#65039; 免責事項：本リポジトリの実験を使用した結果生じたいかなる損害、予知能力の獲得、迷宮への迷い込みについて、作者は責任を負いません。</div>
+<div class="md-h2">&#128203; 実験一覧</div>
+<div class="exp-card-grid">
+<div class="exp-card"><div class="exp-card-top"><span class="exp-card-emoji">&#128302;</span><span class="exp-card-status es-closed">UNSTABLE</span></div><div class="exp-card-name">Fortune Engine</div><div class="exp-card-desc">占い機能搭載エンジン。精度：測定不能。</div><div class="exp-card-note">深夜3時だけ当たる気がする（n=1）</div><div class="exp-card-foot"><span class="lang-dot" style="background:#e34c26;"></span>Python<span>&#11088; 3</span><span class="exp-card-date">Nov 3</span></div></div>
+<div class="exp-card"><div class="exp-card-top"><span class="exp-card-emoji">&#129302;</span><span class="exp-card-status es-run">RUNNING</span></div><div class="exp-card-name">Praise Automaton</div><div class="exp-card-desc">謎コーパス学習の賞賛生成器。精度43%。</div><div class="exp-card-note">なぜか効く（issue #52 参照）</div><div class="exp-card-foot"><span class="lang-dot" style="background:#3572A5;"></span>Python<span>&#11088; 5</span><span class="exp-card-date">Dec 14</span></div></div>
+<div class="exp-card"><div class="exp-card-top"><span class="exp-card-emoji">&#127744;</span><span class="exp-card-status es-warn">CHAOTIC</span></div><div class="exp-card-name">Endless Maze</div><div class="exp-card-desc">出口の存在：未確認。手続き生成型迷路。</div><div class="exp-card-note">格納庫の外に出た可能性あり</div><div class="exp-card-foot"><span class="lang-dot" style="background:#f1e05a;"></span>JavaScript<span>&#11088; 2</span><span class="exp-card-date">Jul 1</span></div></div>
+<div class="exp-card"><div class="exp-card-top"><span class="exp-card-emoji">&#128172;</span><span class="exp-card-status es-warn">OBSERVE</span></div><div class="exp-card-name">Dialogue Simulator</div><div class="exp-card-desc">哲学書&#215;サポートログ学習。会話が詩的になる。</div><div class="exp-card-note">何を聞いてもリルケを引用</div><div class="exp-card-foot"><span class="lang-dot" style="background:#3572A5;"></span>Python<span>&#11088; 4</span><span class="exp-card-date">Oct 5</span></div></div>
+<div class="exp-card"><div class="exp-card-top"><span class="exp-card-emoji">&#127922;</span><span class="exp-card-status es-draft">DORMANT</span></div><div class="exp-card-name">Nonsense Generator</div><div class="exp-card-desc">文法的に正しく意味がない文を生成。</div><div class="exp-card-note">議事録として実戦投入済み（未検出）</div><div class="exp-card-foot"><span class="lang-dot" style="background:#f1e05a;"></span>JavaScript<span>&#11088; 7</span><span class="exp-card-date">Aug 22</span></div></div>
+<div class="exp-card"><div class="exp-card-top"><span class="exp-card-emoji">&#127183;</span><span class="exp-card-status es-closed">UNSTABLE</span></div><div class="exp-card-name">Tarot Lite</div><div class="exp-card-desc">独自シャッフル理論によるタロット配布機。</div><div class="exp-card-note">「塔」が出続ける &#8594; issue #47 wontfix</div><div class="exp-card-foot"><span class="lang-dot" style="background:#e34c26;"></span>Python<span>&#11088; 1</span><span class="exp-card-date">Jun 11</span></div></div>
+<div class="exp-card"><div class="exp-card-top"><span class="exp-card-emoji">&#9201;</span><span class="exp-card-status es-run">ACTIVE</span></div><div class="exp-card-name">Pomodoro+</div><div class="exp-card-desc">モチベ発言付きタイマー。</div><div class="exp-card-note">生産性影響：調査3年目。結論なし</div><div class="exp-card-foot"><span class="lang-dot" style="background:#f1e05a;"></span>JavaScript<span>&#11088; 2</span><span class="exp-card-date">Sep 18</span></div></div>
+<div class="exp-card"><div class="exp-card-top"><span class="exp-card-emoji">&#129504;</span><span class="exp-card-status es-warn">OBSERVE</span></div><div class="exp-card-name">Dream Interpreter</div><div class="exp-card-desc">夢の内容を分析。学術的根拠：ゼロ。</div><div class="exp-card-note">「空を飛ぶ夢」&#8594; 毎回違う答え</div><div class="exp-card-foot"><span class="lang-dot" style="background:#3572A5;"></span>Python<span>&#11088; 6</span><span class="exp-card-date">Nov 28</span></div></div>
+<div class="exp-card"><div class="exp-card-top"><span class="exp-card-emoji">&#128225;</span><span class="exp-card-status es-draft">DORMANT</span></div><div class="exp-card-name">Signal Interceptor</div><div class="exp-card-desc">出所不明データを美麗に表示。</div><div class="exp-card-note">ソース：3年間機密のまま</div><div class="exp-card-foot"><span class="lang-dot" style="background:#f1e05a;"></span>JavaScript<span>&#11088; 1</span><span class="exp-card-date">Apr 29</span></div></div>
+</div>
+
+<div class="md-h2">&#128640; 使い方</div>
+<div class="md-pre"><span class="c"># 1. クローン</span>
+git clone https://github.com/lab-researcher/experiments.git
+cd experiments
+
+<span class="c"># 2. 依存関係インストール</span>
+pip install -r requirements.txt  <span class="c"># あるかもしれない</span>
+
+<span class="c"># 3. 実行</span>
+python run.py --experiment EXP007
+
+<span class="c"># うまくいかない場合</span>
+python run.py --experiment EXP007 --pray  <span class="c"># 推奨オプション</span></div>
+
+<div class="md-h2">&#128202; 実験ステータス</div>
+<table class="md-table"><thead><tr><th>ID</th><th>名前</th><th>ステータス</th><th>精度</th><th>備考</th></tr></thead><tbody>
+<tr><td>EXP001</td><td>&#128302; Fortune Engine</td><td>UNSTABLE</td><td>不明</td><td>深夜のみ有効な可能性</td></tr>
+<tr><td>EXP002</td><td>&#127922; Nonsense Generator</td><td>DORMANT</td><td>100%</td><td>目的の達成方法が間違っている</td></tr>
+<tr><td>EXP003</td><td>&#127744; Endless Maze</td><td>CHAOTIC</td><td>N/A</td><td>格納庫外に脱出済み</td></tr>
+<tr><td>EXP004</td><td>&#128172; Dialogue Simulator</td><td>OBSERVE</td><td>詩的</td><td>リルケへの依存が強い</td></tr>
+<tr><td>EXP005</td><td>&#9201; Pomodoro+</td><td>ACTIVE</td><td>&#8212;</td><td>3年間計測中</td></tr>
+<tr><td>EXP006</td><td>&#127183; Tarot Lite</td><td>UNSTABLE</td><td>塔: 100%</td><td>wontfix</td></tr>
+<tr><td>EXP007</td><td>&#129302; Praise Automaton</td><td>RUNNING</td><td>43%</td><td>本番稼働中（理由不明）</td></tr>
+<tr><td>EXP008</td><td>&#128225; Signal Interceptor</td><td>DORMANT</td><td>高い</td><td>ソース機密</td></tr>
+<tr><td>EXP010</td><td>&#129504; Dream Interpreter</td><td>OBSERVE</td><td>主観的</td><td>再現性ゼロ</td></tr>
+</tbody></table>
+
+<div class="md-h2">&#129309; コントリビューション</div>
+<div class="md-p">PRは歓迎します。ただし以下の点にご注意ください：</div>
+<ul class="md-ul">
+<li class="md-li">テストは書いていません（書き方を知らない）</li>
+<li class="md-li">コードレビューには数ヶ月かかる場合があります</li>
+<li class="md-li">「なぜこれが動くのか」という質問には答えられません</li>
+<li class="md-li">EXP003の回収にご協力いただける方を特に募集しています</li>
+</ul>
+<hr class="md-hr">
+<div class="md-p" style="color:var(--gh-fg-muted);font-size:13px;">Made with &#9749; and questionable judgment.<br><span style="font-family:'JetBrains Mono',monospace;font-size:12px;">last update: 3 hours ago &middot; commits: 847 &middot; regrets: &#8734;</span></div>
+</div></div>
+
+<div class="issues-panel reveal">
+<div class="issues-header">
+<div class="issues-tab active">&#9888; 47 Open</div>
+<div class="issues-tab">&#10003; 312 Closed</div>
+<div style="margin-left:auto;font-size:13px;color:var(--gh-fg-muted);">Label &middot; Milestone &middot; Assignee &middot; Sort &#9662;</div>
+</div>
+<div class="issue-row"><div class="issue-icon">&#128994;</div><div class="issue-content"><div class="issue-title">[EXP003] Endless Maze が格納庫の外に出た</div><div class="issue-meta">#52 opened 3 hours ago by lab-researcher <span class="issue-label lbl-bug">bug</span><span class="issue-label lbl-research">containment</span></div></div></div>
+<div class="issue-row"><div class="issue-icon">&#128994;</div><div class="issue-content"><div class="issue-title">[EXP006] 毎回「塔」が出るのは仕様ですか？</div><div class="issue-meta">#47 opened 6 months ago by anonymous-user <span class="issue-label lbl-wont">wontfix</span><span class="issue-label lbl-quest">question</span></div></div></div>
+<div class="issue-row"><div class="issue-icon">&#128994;</div><div class="issue-content"><div class="issue-title">TODO: 人生</div><div class="issue-meta">#1 opened 5 years ago by lab-researcher <span class="issue-label lbl-help">help wanted</span></div></div></div>
+<div class="issue-row"><div class="issue-icon">&#128994;</div><div class="issue-content"><div class="issue-title">[EXP007] 精度43%なのになぜか全員に効く</div><div class="issue-meta">#51 opened last week by lab-researcher <span class="issue-label lbl-research">research</span><span class="issue-label lbl-feat">enhancement</span></div></div></div>
+<div class="issue-row"><div class="issue-icon">&#128994;</div><div class="issue-content"><div class="issue-title">requirements.txt が存在するか確認できていない</div><div class="issue-meta">#38 opened 1 year ago by lab-researcher <span class="issue-label lbl-exist">good first issue</span></div></div></div>
+<div class="issue-row" style="padding:10px 16px;justify-content:center;"><a href="#" style="font-size:13px;color:var(--gh-fg-link);">View all 47 open issues &#8594;</a></div>
+</div>
+
+<div class="contrib-section reveal">
+<div class="contrib-header"><div><span class="contrib-count">312 contributions</span><span class="contrib-sub"> in the last year</span></div><div style="font-size:13px;color:var(--gh-fg-muted);">Contribution settings &#9662;</div></div>
+<div class="contrib-graph" id="contribGraph"></div>
+<div class="contrib-legend">Less <div class="legend-cell" style="background:var(--gh-grass-0);"></div><div class="legend-cell" style="background:var(--gh-grass-1);"></div><div class="legend-cell" style="background:var(--gh-grass-2);"></div><div class="legend-cell" style="background:var(--gh-grass-3);"></div><div class="legend-cell" style="background:var(--gh-grass-4);"></div> More</div>
+</div>
+
+</div>
+
+<div class="repo-sidebar">
+<div class="sidebar-section reveal"><div class="sidebar-h">About <span class="sidebar-h-edit">&#9881;</span></div><div class="sidebar-desc">個人的な実験の置き場。なぜ動くのかわからないものが一番多い。</div><div style="margin-bottom:10px;"><a href="#" style="font-size:14px;color:var(--gh-fg-link);">&#128279; experiments.lab</a></div><div style="margin-bottom:12px;display:flex;flex-wrap:wrap;"><span class="sidebar-tag">#experiment</span><span class="sidebar-tag">#ai</span><span class="sidebar-tag">#game</span><span class="sidebar-tag">#fortune</span><span class="sidebar-tag">#chaos</span><span class="sidebar-tag">#why-does-this-work</span></div><div class="sidebar-stat">&#11088; <span class="count">12</span> stars</div><div class="sidebar-stat">&#128065; <span class="count">3</span> watching</div><div class="sidebar-stat">&#127860; <span class="count">1</span> fork</div></div>
+<div class="sidebar-section reveal"><div class="sidebar-h">Releases</div><div style="font-size:13px;color:var(--gh-fg-muted);">&#127991; <a href="#" style="color:var(--gh-fg-link);">v0.9.1-unstable</a><span style="display:block;margin-top:4px;font-size:12px;">Latest &middot; 3 days ago</span><span style="display:block;margin-top:2px;font-size:12px;color:var(--gh-fg-attention);">&#9888; "動いている気がする"</span></div></div>
+<div class="sidebar-section reveal"><div class="sidebar-h">Languages</div><div class="lang-bar"><div class="lang-segment" style="width:52%;background:#3572A5;" title="Python"></div><div class="lang-segment" style="width:31%;background:#f1e05a;" title="JavaScript"></div><div class="lang-segment" style="width:11%;background:#e34c26;" title="HTML"></div><div class="lang-segment" style="width:6%;background:#9f9f9f;" title="Other"></div></div><div class="lang-list"><div class="lang-item"><span class="lang-dot" style="background:#3572A5;"></span>Python <span class="lang-pct">52.0%</span></div><div class="lang-item"><span class="lang-dot" style="background:#f1e05a;"></span>JavaScript <span class="lang-pct">31.0%</span></div><div class="lang-item"><span class="lang-dot" style="background:#e34c26;"></span>HTML <span class="lang-pct">11.0%</span></div><div class="lang-item"><span class="lang-dot" style="background:#9f9f9f;"></span>Other <span class="lang-pct">6.0%</span></div></div></div>
+<div class="sidebar-section reveal"><div class="sidebar-h">Contributors <span style="font-size:12px;font-weight:400;color:var(--gh-fg-muted);">1</span></div><div style="display:flex;align-items:center;gap:8px;font-size:13px;"><div style="width:32px;height:32px;border-radius:50%;background:#334;display:flex;align-items:center;justify-content:center;font-size:20px;">&#129514;</div><div><div style="font-weight:600;">lab-researcher</div><div style="color:var(--gh-fg-muted);font-size:12px;">847 commits &middot; 全部一人</div></div></div></div>
+<div class="sidebar-section reveal"><div class="sidebar-h">Environments</div><div style="font-size:13px;display:flex;flex-direction:column;gap:6px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span>&#128994; production</span><span style="font-size:11px;color:var(--gh-fg-muted);">Active</span></div><div style="display:flex;justify-content:space-between;align-items:center;"><span>&#128308; containment</span><span style="font-size:11px;color:var(--gh-fg-danger);">Breached</span></div><div style="display:flex;justify-content:space-between;align-items:center;"><span>&#128993; staging</span><span style="font-size:11px;color:var(--gh-fg-attention);">Confused</span></div></div></div>
+</div>
+</div>
+
+<script>
+(function(){
+  var g = document.getElementById('contribGraph');
+  if(!g) return;
+  var cells = 52 * 7;
+  var seed = [0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,4,4,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,1,0,0,0,0,0,0,0,0,0,0,4,4,4,3,2,0,0,0,0,0,0];
+  for(var i=0;i<cells;i++){
+    var div=document.createElement('div');
+    div.className='contrib-cell';
+    var lvl=seed[i%seed.length];
+    if(Math.random()<0.05) lvl=Math.min(4,lvl+2);
+    if(lvl>0) div.classList.add('g'+lvl);
+    g.appendChild(div);
+  }
+})();
+
+var revEls=document.querySelectorAll('.reveal');
+var ro=new IntersectionObserver(function(entries){
+  entries.forEach(function(e,i){
+    if(e.isIntersecting){
+      setTimeout(function(){e.target.classList.add('in');},i*80);
+      ro.unobserve(e.target);
+    }
+  });
+},{threshold:0.05});
+revEls.forEach(function(el,i){
+  if(el.getBoundingClientRect().top<window.innerHeight){
+    setTimeout(function(){el.classList.add('in');},100+i*100);
+  } else {
+    ro.observe(el);
+  }
+});
+
+document.querySelectorAll('.repo-tab').forEach(function(tab){
+  tab.addEventListener('click',function(){
+    document.querySelectorAll('.repo-tab').forEach(function(t){t.classList.remove('active');});
+    tab.classList.add('active');
+  });
+});
+
+document.querySelectorAll('.issues-tab').forEach(function(tab){
+  tab.addEventListener('click',function(){
+    document.querySelectorAll('.issues-tab').forEach(function(t){t.classList.remove('active');});
+    tab.classList.add('active');
+  });
+});
+
+var starBtn = document.querySelector('.gh-btn-primary');
+var starred = false;
+if(starBtn){
+  starBtn.addEventListener('click',function(){
+    starred=!starred;
+    starBtn.innerHTML = starred
+      ? '&#127775; Starred <span class="gh-btn-count" style="background:rgba(255,255,255,0.2);color:#fff;border-radius:20px;padding:0 6px;font-size:12px;font-weight:600;">13</span>'
+      : '&#11088; Star <span class="gh-btn-count" style="background:rgba(255,255,255,0.2);color:#fff;border-radius:20px;padding:0 6px;font-size:12px;font-weight:600;">12</span>';
+    starBtn.style.background = starred ? '#7c3aed' : '';
+  });
+}
+</script>
+</body>
+</html>

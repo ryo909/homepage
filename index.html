@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DR. &#8709;'S LABORATORY &#8212; CLASSIFIED EXPERIMENTS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Caveat:wght@400;600;700&family=VT323&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --wall: #1c1a16;
+  --wall2: #242018;
+  --paper: #e8e0cc;
+  --paper-aged: #d4c9a8;
+  --paper-dark: #c2b48a;
+  --ink: #2a2318;
+  --ink-faded: #6b5f48;
+  --tape: rgba(255,240,160,0.85);
+  --tape-clear: rgba(200,220,255,0.6);
+  --red-warn: #c0392b;
+  --green-glow: #39d353;
+  --amber: #e8a020;
+  --chalk: #f0ece0;
+  --chalk-dim: rgba(240,236,224,0.4);
+  --shadow-deep: rgba(0,0,0,0.6);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background-color: var(--wall);
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.025) 39px, rgba(255,255,255,0.025) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 39px, rgba(255,255,255,0.015) 40px);
+  color: var(--ink);
+  font-family: 'Courier Prime', monospace;
+  font-size: 13px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='none' stroke='%23e8a020' stroke-width='1.5'/%3E%3Cline x1='10' y1='1' x2='10' y2='7' stroke='%23e8a020' stroke-width='1.5'/%3E%3Cline x1='10' y1='13' x2='10' y2='19' stroke='%23e8a020' stroke-width='1.5'/%3E%3Cline x1='1' y1='10' x2='7' y2='10' stroke='%23e8a020' stroke-width='1.5'/%3E%3Cline x1='13' y1='10' x2='19' y2='10' stroke='%23e8a020' stroke-width='1.5'/%3E%3C/svg%3E") 10 10, crosshair;
+}
+.chalkboard {
+  background: #2a3a2a;
+  background-image: radial-gradient(ellipse at 20% 30%, rgba(60,80,50,0.4) 0%, transparent 60%), radial-gradient(ellipse at 80% 70%, rgba(40,60,40,0.3) 0%, transparent 50%);
+  border-bottom: 12px solid #1a2a1a;
+  box-shadow: inset 0 0 80px rgba(0,0,0,0.4), inset 0 0 20px rgba(0,0,0,0.3), 0 8px 30px rgba(0,0,0,0.8);
+  padding: 40px; position: relative; overflow: hidden;
+}
+.chalkboard::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+  background-size: 300px; pointer-events: none; opacity: 0.8;
+}
+.chalk-title {
+  font-family: 'Caveat', cursive; font-size: clamp(36px, 7vw, 88px); font-weight: 700;
+  color: var(--chalk); line-height: 1; letter-spacing: 0.02em;
+  text-shadow: 0 0 20px rgba(240,236,224,0.15), 1px 1px 0 rgba(0,0,0,0.3);
+  position: relative; margin-bottom: 12px;
+  -webkit-text-stroke: 0.5px rgba(240,236,224,0.3);
+  animation: glitch1 8s steps(1) infinite;
+}
+.chalk-subtitle { font-family: 'VT323', monospace; font-size: 18px; color: var(--chalk-dim); letter-spacing: 0.15em; margin-bottom: 32px; }
+.chalk-formula { position: absolute; font-family: 'Caveat', cursive; color: rgba(240,236,224,0.18); pointer-events: none; line-height: 1.4; transform-origin: center; }
+.chalk-line { position: absolute; background: rgba(240,236,224,0.12); pointer-events: none; }
+.chalk-stats { display: flex; gap: 0; margin-top: 24px; position: relative; z-index: 1; }
+.chalk-stat { padding: 12px 24px; border: 1px dashed rgba(240,236,224,0.25); border-right: none; }
+.chalk-stat:last-child { border-right: 1px dashed rgba(240,236,224,0.25); }
+.chalk-stat-num { font-family: 'VT323', monospace; font-size: 36px; color: var(--green-glow); line-height: 1; display: block; text-shadow: 0 0 12px rgba(57,211,83,0.5); }
+.chalk-stat-label { font-family: 'Caveat', cursive; font-size: 13px; color: var(--chalk-dim); }
+.cork-bar {
+  background: #8b6914;
+  background-image: radial-gradient(ellipse at 30% 40%, #a07820 0%, transparent 60%), radial-gradient(ellipse at 70% 60%, #6b5010 0%, transparent 50%), url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.25'/%3E%3C/svg%3E");
+  background-size: auto, auto, 150px; padding: 16px 40px; border-top: 3px solid #5a4408; border-bottom: 3px solid #5a4408;
+  display: flex; align-items: center; gap: 0;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.4), inset 0 -2px 8px rgba(0,0,0,0.3); overflow-x: auto;
+}
+.pin-tag { background: none; border: none; cursor: pointer; padding: 8px 20px; position: relative; font-family: 'Caveat', cursive; font-size: 17px; font-weight: 600; color: var(--paper-aged); transition: transform 0.15s, color 0.15s; white-space: nowrap; }
+.pin-tag::before { content: '\1F4CC'; position: absolute; top: -4px; left: 50%; transform: translateX(-50%); font-size: 14px; opacity: 0.7; transition: opacity 0.15s; }
+.pin-tag.active { color: var(--ink); background: var(--tape); transform: rotate(-1deg) translateY(-2px); box-shadow: 2px 3px 8px rgba(0,0,0,0.4); }
+.pin-tag.active::before { opacity: 1; }
+.pin-tag:hover:not(.active) { transform: translateY(-3px); }
+.lab-floor { padding: 0 40px 60px; position: relative; }
+.section-tape { display: inline-block; background: var(--tape); font-family: 'Caveat', cursive; font-size: 18px; font-weight: 700; color: var(--ink); padding: 6px 20px 4px; transform: rotate(-0.8deg); box-shadow: 2px 3px 8px rgba(0,0,0,0.5); margin: 48px 0 20px; position: relative; letter-spacing: 0.05em; }
+.section-tape::before, .section-tape::after { content: ''; position: absolute; top: 0; bottom: 0; width: 20px; background: rgba(255,240,100,0.6); opacity: 0.5; }
+.section-tape::before { left: 0; }
+.section-tape::after { right: 0; }
+.scatter-area { position: relative; min-height: 600px; margin: 0 -10px 40px; }
+.paper { background: var(--paper); background-image: repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(100,80,50,0.08) 23px, rgba(100,80,50,0.08) 24px); box-shadow: 3px 3px 0 rgba(0,0,0,0.2), 6px 6px 15px rgba(0,0,0,0.5); position: relative; }
+.paper-aged { background-color: var(--paper-aged); background-image: repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(100,80,40,0.1) 23px, rgba(100,80,40,0.1) 24px); }
+.tape-h { position: absolute; height: 22px; background: var(--tape); opacity: 0.85; left: 50%; transform: translateX(-50%); box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+.tape-h.top { top: -11px; }
+.tape-h.bottom { bottom: -11px; }
+.tape-v { position: absolute; width: 22px; background: var(--tape); opacity: 0.85; top: 50%; transform: translateY(-50%); box-shadow: 1px 0 4px rgba(0,0,0,0.3); }
+.tape-corner { position: absolute; width: 40px; height: 40px; background: var(--tape); opacity: 0.8; box-shadow: 1px 1px 4px rgba(0,0,0,0.3); }
+.stamp { position: absolute; border: 3px solid; padding: 4px 10px; font-family: 'Special Elite', cursive; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; transform-origin: center; pointer-events: none; }
+.stamp-red { color: var(--red-warn); border-color: var(--red-warn); opacity: 0.75; }
+.stamp-blue { color: #2c4a7c; border-color: #2c4a7c; opacity: 0.65; }
+.stamp-green { color: #2d7c3a; border-color: #2d7c3a; opacity: 0.7; }
+.warn-tape { background: repeating-linear-gradient(-45deg, var(--amber) 0px, var(--amber) 12px, var(--ink) 12px, var(--ink) 24px); height: 20px; width: 100%; opacity: 0.85; }
+.feat-card { position: absolute; width: 340px; padding: 28px; cursor: pointer; transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s; }
+.feat-card:hover { z-index: 50 !important; box-shadow: 8px 8px 30px rgba(0,0,0,0.7) !important; }
+.feat-card .card-num { font-family: 'VT323', monospace; font-size: 13px; color: var(--ink-faded); letter-spacing: 0.12em; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+.feat-card .card-emoji { font-size: 52px; line-height: 1; margin: 8px 0 14px; display: block; filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.2)); }
+.feat-card .card-title { font-family: 'Caveat', cursive; font-size: 28px; font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: 10px; }
+.feat-card .card-note { font-family: 'Courier Prime', monospace; font-size: 12px; color: var(--ink-faded); line-height: 1.6; margin-bottom: 16px; }
+.annotation { font-family: 'Caveat', cursive; font-size: 14px; color: #b94040; transform: rotate(-4deg); display: inline-block; margin: 6px 0; line-height: 1.3; }
+.annotation-blue { font-family: 'Caveat', cursive; font-size: 13px; color: #2c4a7c; transform: rotate(2deg); display: inline-block; }
+.strikethrough { text-decoration: line-through; opacity: 0.5; }
+.correction { display: inline-block; background: #f5f0e8; padding: 1px 6px; margin-left: 4px; font-family: 'Caveat', cursive; }
+.feat-card .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid rgba(100,80,50,0.2); margin-top: 10px; }
+.mini-badge { font-family: 'VT323', monospace; font-size: 14px; padding: 2px 10px; border: 1px solid; letter-spacing: 0.1em; }
+.badge-active { color: #2d7c3a; border-color: #2d7c3a; }
+.badge-danger { color: var(--red-warn); border-color: var(--red-warn); }
+.badge-weird { color: var(--amber); border-color: var(--amber); }
+.badge-dormant { color: var(--ink-faded); border-color: var(--ink-faded); }
+.enter-btn { font-family: 'Caveat', cursive; font-size: 15px; font-weight: 700; background: var(--ink); color: var(--paper); border: none; padding: 6px 16px; cursor: pointer; transition: background 0.15s, transform 0.1s; text-decoration: none; display: inline-block; letter-spacing: 0.05em; }
+.enter-btn:hover { background: #c0392b; transform: scale(1.03); }
+.grid-section { columns: 4; column-gap: 20px; margin-bottom: 20px; }
+@media (max-width: 1100px) { .grid-section { columns: 3; } }
+@media (max-width: 800px) { .grid-section { columns: 2; } }
+@media (max-width: 500px) { .grid-section { columns: 1; } }
+.grid-card { break-inside: avoid; margin-bottom: 20px; padding: 22px; cursor: pointer; transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s; position: relative; display: block; }
+.grid-card:nth-child(3n+1) { transform: rotate(-1.2deg); }
+.grid-card:nth-child(3n+2) { transform: rotate(0.7deg); }
+.grid-card:nth-child(3n+3) { transform: rotate(-0.4deg); }
+.grid-card:hover { transform: rotate(0deg) scale(1.04) !important; z-index: 10; box-shadow: 6px 6px 24px rgba(0,0,0,0.7) !important; }
+.grid-card .card-num { font-family: 'VT323', monospace; font-size: 12px; color: var(--ink-faded); letter-spacing: 0.12em; margin-bottom: 8px; display: flex; justify-content: space-between; }
+.grid-card .card-emoji { font-size: 38px; display: block; margin: 6px 0 10px; }
+.grid-card .card-title { font-family: 'Caveat', cursive; font-size: 22px; font-weight: 700; color: var(--ink); line-height: 1.15; margin-bottom: 8px; }
+.grid-card .card-note { font-family: 'Courier Prime', monospace; font-size: 11px; color: var(--ink-faded); line-height: 1.6; margin-bottom: 12px; }
+.grid-card .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px dashed rgba(100,80,50,0.25); margin-top: 6px; }
+.card-date { font-family: 'VT323', monospace; font-size: 14px; color: var(--ink-faded); letter-spacing: 0.08em; }
+.postit { background: #f5e642; background-image: linear-gradient(135deg, #f5e642 0%, #e8d820 100%); box-shadow: 2px 3px 0 rgba(0,0,0,0.2), 4px 6px 12px rgba(0,0,0,0.4); }
+.postit .card-title { color: #2a2318; }
+.postit .card-note { color: #6b5f48; }
+.postit-pink { background: #ff9ec8; background-image: linear-gradient(135deg, #ff9ec8 0%, #f080b0 100%); }
+.postit-blue { background: #9ec8ff; background-image: linear-gradient(135deg, #9ec8ff 0%, #7aacf0 100%); }
+.coffee-ring { position: absolute; border-radius: 50%; border: 2px solid rgba(100,60,10,0.2); pointer-events: none; }
+.beaker-wrap { position: absolute; bottom: 20px; right: 40px; font-size: 60px; pointer-events: none; user-select: none; }
+.beaker-wrap::after { content: '\1F4A8'; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 20px; animation: bubble 2s ease-in-out infinite; }
+@keyframes bubble { 0%, 100% { opacity: 0; transform: translateX(-50%) translateY(0); } 50% { opacity: 0.7; transform: translateX(-50%) translateY(-15px); } }
+.random-btn-wrap { text-align: center; padding: 32px 0 24px; }
+.random-btn { background: none; border: 3px solid var(--amber); color: var(--amber); font-family: 'Caveat', cursive; font-size: 22px; font-weight: 700; padding: 12px 40px; cursor: pointer; letter-spacing: 0.08em; position: relative; overflow: hidden; transition: all 0.15s; box-shadow: 3px 3px 0 rgba(232,160,32,0.3), inset 0 0 0 0 var(--amber); }
+.random-btn::before { content: '\2697\FE0F'; margin-right: 10px; }
+.random-btn:hover { background: var(--amber); color: var(--ink); box-shadow: 5px 5px 0 rgba(232,160,32,0.4); transform: translate(-2px, -2px); }
+.random-btn:active { transform: translate(0,0); box-shadow: 1px 1px 0; }
+.lab-footer { border-top: 3px solid rgba(240,236,224,0.1); padding: 32px 40px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px; }
+.footer-chalk { font-family: 'Caveat', cursive; color: var(--chalk-dim); }
+.footer-chalk .big { font-size: 22px; font-weight: 700; margin-bottom: 6px; display: block; }
+.footer-chalk .small { font-size: 14px; line-height: 1.8; display: block; }
+.footer-stamp { transform: rotate(-8deg); }
+.footer-links { display: flex; gap: 20px; font-family: 'VT323', monospace; font-size: 18px; letter-spacing: 0.1em; }
+.footer-links a { color: var(--chalk-dim); text-decoration: none; transition: color 0.15s; }
+.footer-links a:hover { color: var(--green-glow); }
+@keyframes glitch1 { 0%, 96%, 100% { clip-path: none; transform: none; } 97% { clip-path: inset(30% 0 40% 0); transform: translate(-3px, 2px); } 98% { clip-path: inset(60% 0 10% 0); transform: translate(3px, -1px); } 99% { clip-path: inset(10% 0 70% 0); transform: translate(-2px, 3px); } }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.blink { animation: blink 1.1s step-end infinite; }
+.reveal-card { opacity: 0; transform: translateY(20px) rotate(var(--rot, 0deg)); transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34,1.36,0.64,1); }
+.reveal-card.visible { opacity: 1; transform: translateY(0) rotate(var(--rot, 0deg)); }
+.grid-card:nth-child(3n+1) { --rot: -1.2deg; }
+.grid-card:nth-child(3n+2) { --rot: 0.7deg; }
+.grid-card:nth-child(3n+3) { --rot: -0.4deg; }
+.warning-banner { background: var(--ink); overflow: hidden; height: 24px; position: relative; }
+.warning-scroll { display: flex; gap: 0; white-space: nowrap; animation: marquee 18s linear infinite; position: absolute; top: 0; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.warning-scroll span { font-family: 'VT323', monospace; font-size: 16px; color: var(--amber); padding: 2px 30px; letter-spacing: 0.15em; }
+.grid-card:hover .hover-note { opacity: 1; transform: translateY(-4px); }
+.hover-note { position: absolute; top: -36px; left: 50%; transform: translateX(-50%) translateY(0px); background: var(--tape); font-family: 'Caveat', cursive; font-size: 13px; color: var(--ink); padding: 4px 12px; white-space: nowrap; opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: none; box-shadow: 1px 2px 6px rgba(0,0,0,0.4); }
+.mode-link { position: absolute; top: 14px; right: 16px; z-index: 3; }
+.mode-link a { display: inline-block; font-family: 'VT323', monospace; font-size: 14px; letter-spacing: 0.08em; color: rgba(240,236,224,0.65); text-decoration: none; border: 1px dashed rgba(240,236,224,0.25); padding: 4px 8px; transition: all 0.15s ease; background: rgba(0,0,0,0.08); }
+.mode-link a:hover { color: var(--green-glow); border-color: rgba(57,211,83,0.45); background: rgba(57,211,83,0.08); text-shadow: 0 0 8px rgba(57,211,83,0.3); }
+@media (max-width: 700px) {
+  .chalkboard, .lab-floor { padding: 24px 20px; }
+  .cork-bar { padding: 12px 20px; }
+  .scatter-area { min-height: 1400px; }
+  .feat-card { width: 280px; }
+  .lab-footer { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+<div class="warning-banner"><div class="warning-scroll">
+<span>&#9888; CAUTION: EXPERIMENTAL ZONE &#9888;</span><span>&#12356;&#12367;&#12388;&#12363;&#12398;&#23455;&#39443;&#12399;&#29694;&#22312;&#12418;&#36914;&#34892;&#20013;&#12391;&#12377;</span><span>&#9879; SOME RESULTS ARE INCONCLUSIVE &#9879;</span><span>&#30740;&#31350;&#32773;&#12399;&#36012;&#20219;&#12434;&#36000;&#12356;&#12414;&#12379;&#12435;</span><span>&#9888; ENTER AT OWN RISK &#9888;</span><span>THIS FACILITY OPERATES WITHOUT OVERSIGHT</span>
+<span>&#9888; CAUTION: EXPERIMENTAL ZONE &#9888;</span><span>&#12356;&#12367;&#12388;&#12363;&#12398;&#23455;&#39443;&#12399;&#29694;&#22312;&#12418;&#36914;&#34892;&#20013;&#12391;&#12377;</span><span>&#9879; SOME RESULTS ARE INCONCLUSIVE &#9879;</span><span>&#30740;&#31350;&#32773;&#12399;&#36012;&#20219;&#12434;&#36000;&#12356;&#12414;&#12379;&#12435;</span><span>&#9888; ENTER AT OWN RISK &#9888;</span><span>THIS FACILITY OPERATES WITHOUT OVERSIGHT</span>
+</div></div>
+<div class="chalkboard">
+<div class="mode-link"><a href="./devlog.html" aria-label="研究ログ / GitHub風ページ">RESEARCH TERMINAL &#8599;</a></div>
+<div class="chalk-formula" style="right:5%;top:8%;font-size:22px;transform:rotate(-3deg);">E = mc&sup2; + &#128302;<br>&#8756; <span style="text-decoration:line-through;opacity:0.5;">予測可能</span></div>
+<div class="chalk-formula" style="right:18%;bottom:12%;font-size:16px;transform:rotate(5deg);">実験回数：n &rarr; &infin;<br>失敗確率：1 - &epsilon;</div>
+<div class="chalk-formula" style="left:5%;bottom:10%;font-size:14px;transform:rotate(-2deg);opacity:0.7;">※ この式に根拠はない</div>
+<div class="chalk-line" style="left:2%;top:45%;width:60px;height:1px;transform:rotate(-5deg);"></div>
+<div class="chalk-line" style="right:8%;top:35%;width:40px;height:1px;transform:rotate(3deg);"></div>
+<h1 class="chalk-title">Dr. &#8709;'s<br>Laboratory</h1>
+<div class="chalk-subtitle">EXPERIMENTAL ARCHIVE &mdash; CLASSIFIED<span class="blink">_</span></div>
+<p style="font-family:'Caveat',cursive;color:rgba(240,236,224,0.5);font-size:16px;max-width:520px;line-height:1.6;margin-bottom:24px;">
+風変わりな実験の記録。全て公開可能なものだけ（たぶん）。<br>
+<span class="strikethrough">責任は取りません。</span>
+<span class="correction">少しだけ取ります。</span>
+</p>
+<div class="chalk-stats">
+<div class="chalk-stat"><span class="chalk-stat-num" id="expCount">09</span><span class="chalk-stat-label">実験数</span></div>
+<div class="chalk-stat"><span class="chalk-stat-num" style="color:var(--amber);text-shadow:0 0 12px rgba(232,160,32,0.5);">03</span><span class="chalk-stat-label">進行中</span></div>
+<div class="chalk-stat"><span class="chalk-stat-num" style="color:var(--red-warn);text-shadow:0 0 12px rgba(192,57,43,0.5);">&infin;</span><span class="chalk-stat-label">未解明</span></div>
+<div class="chalk-stat"><span class="chalk-stat-num">0</span><span class="chalk-stat-label" style="position:relative;">事故数<span style="position:absolute;left:0;top:-18px;font-family:'Caveat',cursive;font-size:13px;color:var(--red-warn);transform:rotate(-5deg);white-space:nowrap;">&larr; <span class="strikethrough">7</span> 訂正済み</span></span></div>
+</div>
+<div class="beaker-wrap">&#129514;</div>
+</div>
+
+<div class="cork-bar">
+<button class="pin-tag active" data-filter="all">すべて</button>
+<button class="pin-tag" data-filter="game">ゲーム系</button>
+<button class="pin-tag" data-filter="ai">AI実験</button>
+<button class="pin-tag" data-filter="fortune">占い系</button>
+<button class="pin-tag" data-filter="gen">生成系</button>
+<button class="pin-tag" data-filter="tool">ちょい実用</button>
+<button class="pin-tag" data-filter="misc">その他</button>
+</div>
+
+<div class="lab-floor">
+<div class="section-tape">&#9733; 注目の実験</div>
+<div class="scatter-area" id="scatterArea">
+
+<div class="feat-card paper" style="top:20px;left:2%;transform:rotate(-2.5deg);z-index:5;box-shadow:4px 6px 20px rgba(0,0,0,0.6);" id="fc1">
+<div class="tape-corner" style="top:-14px;left:-10px;transform:rotate(-45deg);width:50px;height:50px;background:var(--tape);opacity:0.8;clip-path:polygon(0 0,100% 0,0 100%);"></div>
+<div class="card-num"><span>EXP-001</span><span class="mini-badge badge-danger">暴走中</span></div>
+<span class="card-emoji">&#128302;</span>
+<div class="card-title">Fortune Engine</div>
+<div class="card-note">占い機能を搭載したエンジン。<br>精度：<span class="strikethrough">高い</span><span class="correction">不明</span></div>
+<div class="annotation">&larr; ほぼ毎回当たる気がする</div>
+<div class="card-footer"><span class="card-date">2025.11.03</span><a href="#" class="enter-btn">入室 &rarr;</a></div>
+<div class="stamp stamp-red" style="top:12px;right:16px;transform:rotate(12deg);">UNSTABLE</div>
+</div>
+
+<div class="feat-card postit" style="top:40px;left:30%;transform:rotate(1.8deg);z-index:6;box-shadow:3px 5px 16px rgba(0,0,0,0.5);" id="fc2">
+<div class="tape-h top" style="width:80px;"></div>
+<div class="card-num"><span>EXP-007</span><span class="mini-badge badge-active">稼働中</span></div>
+<span class="card-emoji">&#129302;</span>
+<div class="card-title">褒め自動機</div>
+<div class="card-note">入力を褒め称える機械。<br>訓練データ：不明な賞賛文書</div>
+<div class="annotation-blue" style="display:block;margin:8px 0;">精度43%でもなぜか嬉しい</div>
+<div class="card-footer"><span class="card-date">2025.12.14</span><a href="#" class="enter-btn">入室 &rarr;</a></div>
+<div class="coffee-ring" style="width:55px;height:55px;bottom:-5px;right:20px;"></div>
+</div>
+
+<div class="feat-card postit postit-blue" style="top:30px;right:2%;transform:rotate(-1.2deg);z-index:4;box-shadow:4px 5px 18px rgba(0,0,0,0.55);" id="fc3">
+<div class="tape-corner" style="top:-12px;right:-10px;transform:rotate(45deg);width:50px;height:50px;background:var(--tape-clear);opacity:0.9;clip-path:polygon(100% 0,0 0,100% 100%);"></div>
+<div class="card-num"><span>EXP-004</span><span class="mini-badge badge-weird">観察中</span></div>
+<span class="card-emoji">&#128172;</span>
+<div class="card-title">Dialogue Simulator</div>
+<div class="card-note">哲学書とカスタマーサポートの<br>ログで学習した対話AI</div>
+<div class="annotation" style="color:#2c4a7c;transform:rotate(2deg);">会話がたまに詩的になる</div>
+<div class="card-footer"><span class="card-date">2025.10.05</span><a href="#" class="enter-btn">入室 &rarr;</a></div>
+</div>
+
+<div style="position:absolute;top:260px;left:12%;background:#f5f0e8;padding:12px 16px;transform:rotate(4deg);box-shadow:2px 3px 8px rgba(0,0,0,0.5);z-index:3;font-family:'Caveat',cursive;font-size:15px;color:var(--ink-faded);max-width:160px;line-height:1.5;">
+&#128161; 新実験は<br>毎月追加予定<br><span style="font-size:12px;opacity:0.6;">&larr; たぶん</span>
+</div>
+<div style="position:absolute;bottom:30px;left:22%;background:var(--tape);padding:8px 16px;transform:rotate(-3deg);box-shadow:2px 3px 8px rgba(0,0,0,0.5);z-index:3;font-family:'Caveat',cursive;font-size:13px;color:var(--ink);max-width:200px;">
+&#9888; EXP-001は深夜の使用推奨
+</div>
+<div style="position:absolute;top:200px;right:6%;background:#f5e642;padding:10px 14px;transform:rotate(6deg);box-shadow:2px 3px 8px rgba(0,0,0,0.5);z-index:3;font-family:'Caveat',cursive;font-size:14px;color:var(--ink);max-width:150px;line-height:1.5;">
+全部無料です<br>（当然）
+</div>
+</div>
+
+<div style="margin: 32px -40px; overflow:hidden;"><div class="warn-tape" style="transform:rotate(-0.3deg);"></div></div>
+
+<div class="section-tape" style="transform:rotate(0.5deg);margin-top:12px;">&#128193; 全実験アーカイブ</div>
+<div class="grid-section" id="gridSection">
+
+<div class="paper grid-card reveal-card" data-cat="gen">
+<div class="hover-note">クリックして入室</div>
+<div class="tape-h top" style="width:60px;"></div>
+<div class="card-num"><span>EXP-002</span><span class="mini-badge badge-dormant">休眠中</span></div>
+<span class="card-emoji">&#127922;</span>
+<div class="card-title">Nonsense Generator</div>
+<div class="card-note">文法的に正しく意味不明な文を生成する装置。活用法：不明。</div>
+<div class="stamp stamp-blue" style="bottom:40px;right:10px;transform:rotate(-8deg);font-size:9px;">REVIEWED</div>
+<div class="card-footer"><span class="card-date">2025.08.22</span><span class="mini-badge badge-dormant">生成系</span></div>
+</div>
+
+<div class="postit postit-pink grid-card reveal-card" data-cat="game">
+<div class="hover-note">迷路に入る</div>
+<div class="tape-corner" style="top:-10px;left:-8px;width:36px;height:36px;background:var(--tape);clip-path:polygon(0 0,100% 0,0 100%);opacity:0.85;"></div>
+<div class="card-num"><span>EXP-003</span><span class="mini-badge badge-weird">混沌</span></div>
+<span class="card-emoji">&#127744;</span>
+<div class="card-title">Endless Maze</div>
+<div class="card-note">出口があるかどうか、研究班も確認できていない。</div>
+<div class="annotation" style="font-size:12px;transform:rotate(-2deg);">3回テストして3回迷った</div>
+<div class="card-footer"><span class="card-date">2025.07.01</span><span class="mini-badge badge-weird">ゲーム</span></div>
+</div>
+
+<div class="paper paper-aged grid-card reveal-card" data-cat="tool">
+<div class="hover-note">タイマー起動</div>
+<div class="tape-h top" style="width:70px;background:var(--tape-clear);"></div>
+<div class="card-num"><span>EXP-005</span><span class="mini-badge badge-active">稼働中</span></div>
+<span class="card-emoji">&#9201;</span>
+<div class="card-title">Pomodoro+</div>
+<div class="card-note">モチベーション発言付きタイマー。生産性への影響：<span class="strikethrough">なし</span><span class="correction">調査中</span></div>
+<div class="card-footer"><span class="card-date">2025.09.18</span><span class="mini-badge badge-active">ツール</span></div>
+<div class="coffee-ring" style="width:40px;height:40px;top:15px;right:12px;border-color:rgba(100,60,10,0.15);"></div>
+</div>
+
+<div class="postit grid-card reveal-card" data-cat="fortune">
+<div class="hover-note">タロット引く</div>
+<div class="tape-corner" style="bottom:-10px;right:-8px;width:36px;height:36px;background:var(--tape-clear);clip-path:polygon(100% 0,100% 100%,0 100%);opacity:0.85;"></div>
+<div class="card-num"><span>EXP-006</span><span class="mini-badge badge-danger">暴走中</span></div>
+<span class="card-emoji">&#127183;</span>
+<div class="card-title">Tarot Lite</div>
+<div class="card-note">独自シャッフル理論によるタロット配布機。霊的校正：未実施。</div>
+<div class="annotation" style="font-size:12px;">&larr; なぜか毎回「塔」が出る</div>
+<div class="card-footer"><span class="card-date">2025.06.11</span><span class="mini-badge badge-danger">占い</span></div>
+</div>
+
+<div class="paper grid-card reveal-card" style="padding-bottom:28px;" data-cat="misc">
+<div class="hover-note">傍受する</div>
+<div class="tape-h top" style="width:55px;"></div>
+<div class="card-num"><span>EXP-008</span><span class="mini-badge badge-dormant">休眠中</span></div>
+<span class="card-emoji">&#128225;</span>
+<div class="card-title">Signal Interceptor</div>
+<div class="card-note">出所不明のデータを美麗に表示する装置。ソース：機密。<br><br></div>
+<div class="stamp stamp-red" style="top:auto;bottom:48px;left:16px;transform:rotate(-5deg);font-size:9px;">CLASSIFIED</div>
+<div class="card-footer"><span class="card-date">2025.04.29</span><span class="mini-badge badge-dormant">その他</span></div>
+</div>
+
+<div class="postit postit-blue grid-card reveal-card" data-cat="game">
+<div class="hover-note">パズルを解く</div>
+<div class="tape-h top" style="width:65px;background:var(--tape);"></div>
+<div class="card-num"><span>EXP-009</span><span class="mini-badge badge-active">稼働中</span></div>
+<span class="card-emoji">&#129513;</span>
+<div class="card-title">Puzzle Box</div>
+<div class="card-note">難易度：穏やか / 普通 / 実存的。後者は推奨しない。</div>
+<div class="card-footer"><span class="card-date">2025.12.01</span><span class="mini-badge badge-active">ゲーム</span></div>
+</div>
+
+<div class="paper paper-aged grid-card reveal-card" data-cat="ai">
+<div class="hover-note">起動する</div>
+<div class="tape-corner" style="top:-10px;right:-8px;width:36px;height:36px;background:var(--tape);clip-path:polygon(100% 0,0 0,100% 100%);opacity:0.85;"></div>
+<div class="card-num"><span>EXP-010</span><span class="mini-badge badge-weird">観察中</span></div>
+<span class="card-emoji">&#129504;</span>
+<div class="card-title">Dream Interpreter</div>
+<div class="card-note">夢の内容を入力すると分析を返す。<span class="strikethrough">学術的根拠あり</span></div>
+<div class="annotation-blue" style="font-size:13px;display:block;margin-top:6px;">「空を飛ぶ夢」&rarr;毎回違う答え</div>
+<div class="card-footer"><span class="card-date">2025.11.28</span><span class="mini-badge badge-weird">AI</span></div>
+</div>
+
+</div>
+
+<div class="random-btn-wrap">
+<button class="random-btn" id="randomBtn">ランダムな実験を開く</button>
+<div style="font-family:'Caveat',cursive;color:rgba(240,236,224,0.3);font-size:14px;margin-top:10px;">※ どれが開くかは神のみぞ知る</div>
+</div>
+</div>
+
+<footer class="lab-footer">
+<div class="footer-chalk">
+<span class="big">Dr. &#8709;'s Laboratory</span>
+<span class="small">全実験は非公式に実施されています。<br>結果は観察されたとおりに記録されており、<br>意図通りとは限りません。</span>
+<div class="footer-links" style="margin-top:14px;">
+<a href="#">GitHub</a>
+<a href="#">Archive</a>
+<a href="#">Methodology</a>
+<a href="./devlog.html">Research Terminal</a>
+</div>
+</div>
+<div class="footer-stamp"><div class="stamp stamp-green" style="font-size:13px;padding:10px 18px;">PUBLIC<br>ACCESS</div></div>
+<div style="text-align:right;font-family:'VT323',monospace;font-size:15px;color:rgba(240,236,224,0.2);line-height:2;letter-spacing:0.1em;">
+<div>JURISDICTION: NONE</div>
+<div>LIABILITY: DISCLAIMED</div>
+<div>UPDATED: 2025.12.14</div>
+<div>STATUS: <span style="color:var(--green-glow);text-shadow:0 0 8px rgba(57,211,83,0.5);">OPERATIONAL<span class="blink">&#9612;</span></span></div>
+</div>
+</footer>
+
+<script>
+document.querySelectorAll('.feat-card').forEach(function(card) {
+  var baseTransform = card.style.transform;
+  card.addEventListener('mouseenter', function() {
+    card.style.transform = baseTransform.replace(/rotate\([^)]+\)/, 'rotate(0deg)') + ' scale(1.03)';
+  });
+  card.addEventListener('mouseleave', function() {
+    card.style.transform = baseTransform;
+  });
+});
+
+document.querySelectorAll('.pin-tag').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.pin-tag').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    var filter = btn.dataset.filter;
+    document.querySelectorAll('.grid-card').forEach(function(card) {
+      var cat = card.dataset.cat;
+      card.style.display = (filter === 'all' || cat === filter) ? '' : 'none';
+    });
+  });
+});
+
+var revealEls = document.querySelectorAll('.reveal-card');
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) {
+      setTimeout(function() { e.target.classList.add('visible'); }, 60);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.05 });
+revealEls.forEach(function(el) { observer.observe(el); });
+revealEls.forEach(function(el, i) {
+  if (el.getBoundingClientRect().top < window.innerHeight) {
+    setTimeout(function() { el.classList.add('visible'); }, 100 + i * 80);
+  }
+});
+
+var allCards = [].slice.call(document.querySelectorAll('.feat-card, .grid-card'));
+document.getElementById('randomBtn').addEventListener('click', function() {
+  var visibleCards = allCards.filter(function(card) { return card.offsetParent !== null; });
+  if (visibleCards.length === 0) return;
+  var pick = visibleCards[Math.floor(Math.random() * visibleCards.length)];
+  pick.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  pick.style.transition = 'box-shadow 0.2s, transform 0.2s';
+  var orig = pick.style.transform;
+  pick.style.transform = (orig || '') + ' scale(1.08)';
+  pick.style.boxShadow = '0 0 0 3px var(--amber), 8px 8px 30px rgba(0,0,0,0.8)';
+  setTimeout(function() { pick.style.transform = orig; pick.style.boxShadow = ''; }, 1200);
+});
+
+var counter = document.getElementById('expCount');
+var i = 0;
+var final = document.querySelectorAll('.feat-card, .grid-card').length;
+var scramble = setInterval(function() {
+  counter.textContent = String(Math.floor(Math.random() * 99)).padStart(2, '0');
+  i++;
+  if (i > 12) { clearInterval(scramble); counter.textContent = String(final).padStart(2, '0'); }
+}, 80);
+</script>
+</body>
+</html>
