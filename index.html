@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DR. &#8709;'S LABORATORY &#8212; CLASSIFIED EXPERIMENTS</title>
+<title>SOREPPOI LABORATORY &#8212; CLASSIFIED EXPERIMENTS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Caveat:wght@400;600;700&family=VT323&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
@@ -168,6 +168,35 @@ body {
 .mode-link { position: absolute; top: 14px; right: 16px; z-index: 3; }
 .mode-link a { display: inline-block; font-family: 'VT323', monospace; font-size: 14px; letter-spacing: 0.08em; color: rgba(240,236,224,0.65); text-decoration: none; border: 1px dashed rgba(240,236,224,0.25); padding: 4px 8px; transition: all 0.15s ease; background: rgba(0,0,0,0.08); }
 .mode-link a:hover { color: var(--green-glow); border-color: rgba(57,211,83,0.45); background: rgba(57,211,83,0.08); text-shadow: 0 0 8px rgba(57,211,83,0.3); }
+.research-note {
+  position: absolute;
+  top: -34px;
+  left: 50%;
+  --note-x: 0px;
+  --note-r: 0deg;
+  transform: translateX(calc(-50% + var(--note-x))) translateY(6px) rotate(var(--note-r));
+  font-family: 'Caveat', cursive;
+  font-size: 14px;
+  line-height: 1.2;
+  background: #f5f0e8;
+  color: var(--ink);
+  border: 1px dashed rgba(100,80,50,0.25);
+  box-shadow: 1px 2px 6px rgba(0,0,0,0.35);
+  padding: 4px 12px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.22s ease;
+  pointer-events: none;
+  z-index: 60;
+}
+.research-note.show {
+  opacity: 1;
+  transform: translateX(calc(-50% + var(--note-x))) translateY(0) rotate(var(--note-r));
+}
+.research-note.hide {
+  opacity: 0;
+  transform: translateX(calc(-50% + var(--note-x))) translateY(6px) rotate(var(--note-r));
+}
 @media (max-width: 700px) {
   .chalkboard, .lab-floor { padding: 24px 20px; }
   .cork-bar { padding: 12px 20px; }
@@ -189,7 +218,7 @@ body {
 <div class="chalk-formula" style="left:5%;bottom:10%;font-size:14px;transform:rotate(-2deg);opacity:0.7;">※ この式に根拠はない</div>
 <div class="chalk-line" style="left:2%;top:45%;width:60px;height:1px;transform:rotate(-5deg);"></div>
 <div class="chalk-line" style="right:8%;top:35%;width:40px;height:1px;transform:rotate(3deg);"></div>
-<h1 class="chalk-title">Dr. &#8709;'s<br>Laboratory</h1>
+<h1 class="chalk-title">Soreppoi<br>Laboratory</h1>
 <div class="chalk-subtitle">EXPERIMENTAL ARCHIVE &mdash; CLASSIFIED<span class="blink">_</span></div>
 <p style="font-family:'Caveat',cursive;color:rgba(240,236,224,0.5);font-size:16px;max-width:520px;line-height:1.6;margin-bottom:24px;">
 風変わりな実験の記録。全て公開可能なものだけ（たぶん）。<br>
@@ -332,6 +361,18 @@ body {
 <div class="card-footer"><span class="card-date">GAME</span><span class="mini-badge badge-active">ゲーム</span></div>
 </div>
 
+<div class="paper paper-aged grid-card reveal-card" data-cat="misc" data-dummy="1">
+<div class="hover-note">アクセス拒否 / CLASSIFIED</div>
+<div class="tape-h top" style="width:72px;background:var(--tape-clear);"></div>
+<div class="card-num"><span>EXP-010</span><span class="mini-badge badge-danger">SEALED</span></div>
+<span class="card-emoji">&#128274;</span>
+<div class="card-title">REDACTED EXPERIMENT</div>
+<div class="card-note">社内向け／認証付きのため非掲載。公開可能な範囲のみ展示中（演出）。</div>
+<div class="stamp stamp-red" style="top:18px;right:10px;transform:rotate(-14deg);">CLASSIFIED</div>
+<div class="stamp stamp-blue" style="bottom:46px;left:14px;transform:rotate(8deg);font-size:9px;">INTERNAL</div>
+<div class="card-footer"><span class="card-date">----.--.--</span><span class="mini-badge badge-danger">SEALED</span></div>
+</div>
+
 </div>
 
 <div class="random-btn-wrap">
@@ -342,7 +383,7 @@ body {
 
 <footer class="lab-footer">
 <div class="footer-chalk">
-<span class="big">Dr. &#8709;'s Laboratory</span>
+<span class="big">Soreppoi Laboratory</span>
 <span class="small">全実験は非公式に実施されています。<br>結果は観察されたとおりに記録されており、<br>意図通りとは限りません。</span>
 <div class="footer-links" style="margin-top:14px;">
 <a href="#">GitHub</a>
@@ -414,12 +455,121 @@ document.getElementById('randomBtn').addEventListener('click', function() {
 
 var counter = document.getElementById('expCount');
 var i = 0;
-var final = document.querySelectorAll('.feat-card, .grid-card').length;
+var final = document.querySelectorAll('.feat-card, .grid-card:not([data-dummy=\"1\"])').length;
 var scramble = setInterval(function() {
   counter.textContent = String(Math.floor(Math.random() * 99)).padStart(2, '0');
   i++;
   if (i > 12) { clearInterval(scramble); counter.textContent = String(final).padStart(2, '0'); }
 }, 80);
+
+var researchNotes = [
+  '再現性：低い',
+  '根拠：ない',
+  'たぶん仕様',
+  '深夜にだけ動く',
+  '動いたのでヨシ',
+  '観察者の気分で変わる',
+  '結果は参考程度',
+  'いったん公開',
+  'バグかもしれない',
+  '倫理審査：未実施',
+  '検証：明日やる',
+  '修正：来世',
+  'なぜかウケる',
+  '記録：適当',
+  '供給過多',
+  '実験班は解散済み',
+  '収容中',
+  '取扱注意',
+  '逆に正しい可能性',
+  '未解明',
+  'アクセス拒否',
+  'CLASSIFIED',
+  '内部検証のみ',
+  '観測範囲外'
+];
+
+var noteState = new WeakMap();
+function getNoteState(card) {
+  var s = noteState.get(card);
+  if (!s) {
+    s = { noteIndex: null, hideTimer: null, removeTimer: null, hovering: false };
+    noteState.set(card, s);
+  }
+  return s;
+}
+function noteKey(card) {
+  var numEl = card.querySelector('.card-num span');
+  return card.id || card.getAttribute('data-url') || card.getAttribute('data-cat') || (numEl ? numEl.textContent : '');
+}
+function hashNote(str) {
+  var h = 0;
+  for (var i = 0; i < str.length; i++) h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+function noteIndexFor(card, state) {
+  if (state.noteIndex !== null) return state.noteIndex;
+  state.noteIndex = hashNote(noteKey(card) + '-note') % researchNotes.length;
+  return state.noteIndex;
+}
+function clearNoteTimers(state) {
+  if (state.hideTimer) clearTimeout(state.hideTimer);
+  if (state.removeTimer) clearTimeout(state.removeTimer);
+  state.hideTimer = null;
+  state.removeTimer = null;
+}
+function hideNote(card) {
+  var note = card.querySelector('.research-note');
+  var state = getNoteState(card);
+  state.hovering = false;
+  clearNoteTimers(state);
+  if (!note) return;
+  note.classList.remove('show');
+  note.classList.add('hide');
+  state.removeTimer = setTimeout(function() {
+    if (note.parentNode === card) card.removeChild(note);
+  }, 240);
+}
+function scheduleAutoHide(card) {
+  var state = getNoteState(card);
+  if (state.hovering) return;
+  var ttl = 2000 + (hashNote(noteKey(card) + '-ttl') % 2000);
+  state.hideTimer = setTimeout(function() {
+    if (!state.hovering) hideNote(card);
+  }, ttl);
+}
+function showNote(card, keepOnHover) {
+  var state = getNoteState(card);
+  state.hovering = !!keepOnHover;
+  clearNoteTimers(state);
+  var note = card.querySelector('.research-note');
+  if (!note) {
+    note = document.createElement('div');
+    note.className = 'research-note';
+    card.appendChild(note);
+  }
+  var key = noteKey(card);
+  var idx = noteIndexFor(card, state);
+  note.textContent = researchNotes[idx];
+  note.style.setProperty('--note-r', ((hashNote(key + '-rot') % 9) - 4) + 'deg');
+  note.style.setProperty('--note-x', ((hashNote(key + '-x') % 21) - 10) + 'px');
+  note.classList.remove('hide');
+  requestAnimationFrame(function() { note.classList.add('show'); });
+  scheduleAutoHide(card);
+}
+
+document.querySelectorAll('.feat-card, .grid-card').forEach(function(card) {
+  card.addEventListener('mouseenter', function() {
+    showNote(card, true);
+  });
+  card.addEventListener('mouseleave', function() {
+    hideNote(card);
+  });
+  card.addEventListener('click', function(e) {
+    if (e.target && e.target.closest && e.target.closest('a')) return;
+    showNote(card, false);
+  });
+});
 
 document.querySelectorAll('.grid-card[data-url], .feat-card[data-url]').forEach(function(card) {
   card.addEventListener('click', function(e) {
