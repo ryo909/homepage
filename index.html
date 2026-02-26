@@ -169,12 +169,11 @@ body {
 .mode-link a { display: inline-block; font-family: 'VT323', monospace; font-size: 14px; letter-spacing: 0.08em; color: rgba(240,236,224,0.65); text-decoration: none; border: 1px dashed rgba(240,236,224,0.25); padding: 4px 8px; transition: all 0.15s ease; background: rgba(0,0,0,0.08); }
 .mode-link a:hover { color: var(--green-glow); border-color: rgba(57,211,83,0.45); background: rgba(57,211,83,0.08); text-shadow: 0 0 8px rgba(57,211,83,0.3); }
 .research-note {
-  position: absolute;
-  top: -34px;
-  left: 50%;
-  --note-x: 0px;
+  position: fixed;
+  top: 0;
+  left: 0;
   --note-r: 0deg;
-  transform: translateX(calc(-50% + var(--note-x))) translateY(6px) rotate(var(--note-r));
+  transform: translateY(6px) rotate(var(--note-r));
   font-family: 'Caveat', cursive;
   font-size: 14px;
   line-height: 1.2;
@@ -191,11 +190,11 @@ body {
 }
 .research-note.show {
   opacity: 1;
-  transform: translateX(calc(-50% + var(--note-x))) translateY(0) rotate(var(--note-r));
+  transform: translateY(0) rotate(var(--note-r));
 }
 .research-note.hide {
   opacity: 0;
-  transform: translateX(calc(-50% + var(--note-x))) translateY(6px) rotate(var(--note-r));
+  transform: translateY(6px) rotate(var(--note-r));
 }
 @media (max-width: 700px) {
   .chalkboard, .lab-floor { padding: 24px 20px; }
@@ -216,6 +215,7 @@ body {
 <div class="chalk-formula" style="right:5%;top:8%;font-size:22px;transform:rotate(-3deg);">E = mc&sup2; + &#128302;<br>&#8756; <span style="text-decoration:line-through;opacity:0.5;">予測可能</span></div>
 <div class="chalk-formula" style="right:18%;bottom:12%;font-size:16px;transform:rotate(5deg);">実験回数：n &rarr; &infin;<br>失敗確率：1 - &epsilon;</div>
 <div class="chalk-formula" style="left:5%;bottom:10%;font-size:14px;transform:rotate(-2deg);opacity:0.7;">※ この式に根拠はない</div>
+<div class="chalk-formula" style="right:6%;bottom:5%;font-size:13px;transform:rotate(-1deg);opacity:0.33;">広報チェックを通過したやつだけ展示</div>
 <div class="chalk-line" style="left:2%;top:45%;width:60px;height:1px;transform:rotate(-5deg);"></div>
 <div class="chalk-line" style="right:8%;top:35%;width:40px;height:1px;transform:rotate(3deg);"></div>
 <h1 class="chalk-title">Soreppoi<br>Laboratory</h1>
@@ -362,14 +362,15 @@ body {
 </div>
 
 <div class="paper paper-aged grid-card reveal-card" data-cat="misc" data-dummy="1">
-<div class="hover-note">アクセス拒否 / CLASSIFIED</div>
+<div class="hover-note">回収中。触らないで</div>
 <div class="tape-h top" style="width:72px;background:var(--tape-clear);"></div>
 <div class="card-num"><span>EXP-010</span><span class="mini-badge badge-danger">SEALED</span></div>
 <span class="card-emoji">&#128274;</span>
-<div class="card-title">REDACTED EXPERIMENT</div>
-<div class="card-note">社内向け／認証付きのため非掲載。公開可能な範囲のみ展示中（演出）。</div>
-<div class="stamp stamp-red" style="top:18px;right:10px;transform:rotate(-14deg);">CLASSIFIED</div>
-<div class="stamp stamp-blue" style="bottom:46px;left:14px;transform:rotate(8deg);font-size:9px;">INTERNAL</div>
+<div class="card-title">ESCAPED EXPERIMENT</div>
+<div class="card-note">格納庫の外へ脱走。現在回収中のため公開停止。接触すると記録が消える可能性あり。</div>
+<div class="stamp stamp-red" style="top:18px;right:10px;transform:rotate(-14deg);">ESCAPED</div>
+<div class="stamp stamp-blue" style="bottom:46px;left:14px;transform:rotate(8deg);font-size:9px;">CONTAINMENT BREACH</div>
+<div class="stamp stamp-green" style="bottom:20px;right:12px;transform:rotate(-7deg);font-size:9px;">RECOVERY IN PROGRESS</div>
 <div class="card-footer"><span class="card-date">----.--.--</span><span class="mini-badge badge-danger">SEALED</span></div>
 </div>
 
@@ -421,6 +422,7 @@ document.querySelectorAll('.pin-tag').forEach(function(btn) {
       var cat = card.dataset.cat;
       card.style.display = (filter === 'all' || cat === filter) ? '' : 'none';
     });
+    hideAllResearchNotes();
   });
 });
 
@@ -489,11 +491,12 @@ var researchNotes = [
   '観測範囲外'
 ];
 
+var dummyNotes = ['回収中', '触らないで', '封鎖中', '接触禁止'];
 var noteState = new WeakMap();
 function getNoteState(card) {
   var s = noteState.get(card);
   if (!s) {
-    s = { noteIndex: null, hideTimer: null, removeTimer: null, hovering: false };
+    s = { noteText: null, hideTimer: null, removeTimer: null, hovering: false, noteEl: null };
     noteState.set(card, s);
   }
   return s;
@@ -507,27 +510,118 @@ function hashNote(str) {
   for (var i = 0; i < str.length; i++) h = ((h << 5) - h + str.charCodeAt(i)) | 0;
   return Math.abs(h);
 }
-function noteIndexFor(card, state) {
-  if (state.noteIndex !== null) return state.noteIndex;
-  state.noteIndex = hashNote(noteKey(card) + '-note') % researchNotes.length;
-  return state.noteIndex;
-}
 function clearNoteTimers(state) {
   if (state.hideTimer) clearTimeout(state.hideTimer);
   if (state.removeTimer) clearTimeout(state.removeTimer);
   state.hideTimer = null;
   state.removeTimer = null;
 }
+function clamp(v, min, max) {
+  return Math.min(max, Math.max(min, v));
+}
+function buildCandidate(cardRect, noteW, noteH, pos, margin, vw, vh) {
+  var rawX = 0;
+  var rawY = 0;
+  if (pos === 'top') {
+    rawX = cardRect.left + (cardRect.width - noteW) / 2;
+    rawY = cardRect.top - noteH - 10;
+  } else if (pos === 'bottom') {
+    rawX = cardRect.left + (cardRect.width - noteW) / 2;
+    rawY = cardRect.bottom + 10;
+  } else if (pos === 'left') {
+    rawX = cardRect.left - noteW - 10;
+    rawY = cardRect.top + (cardRect.height - noteH) / 2;
+  } else {
+    rawX = cardRect.right + 10;
+    rawY = cardRect.top + (cardRect.height - noteH) / 2;
+  }
+  var outside =
+    Math.max(0, margin - rawX) +
+    Math.max(0, margin - rawY) +
+    Math.max(0, rawX + noteW - (vw - margin)) +
+    Math.max(0, rawY + noteH - (vh - margin));
+  var maxX = Math.max(margin, vw - noteW - margin);
+  var maxY = Math.max(margin, vh - noteH - margin);
+  var x = clamp(rawX, margin, maxX);
+  var y = clamp(rawY, margin, maxY);
+  return {
+    pos: pos,
+    x: x,
+    y: y,
+    outside: outside,
+    rect: { left: x, top: y, right: x + noteW, bottom: y + noteH }
+  };
+}
+function overlapArea(a, b) {
+  var w = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
+  var h = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+  return w * h;
+}
+function totalOverlap(rect, otherRects) {
+  var total = 0;
+  otherRects.forEach(function(r) { total += overlapArea(rect, r); });
+  return total;
+}
+function choosePlacement(cardRect, noteW, noteH, key, note) {
+  var margin = 8;
+  var vw = window.innerWidth;
+  var vh = window.innerHeight;
+  var order = ['top', 'right', 'bottom', 'left'];
+  var shift = hashNote(key + '-pos') % order.length;
+  var positions = order.slice(shift).concat(order.slice(0, shift));
+  var otherRects = [].slice.call(document.querySelectorAll('.research-note.show'))
+    .filter(function(el) { return el !== note; })
+    .map(function(el) {
+      var r = el.getBoundingClientRect();
+      return { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+    });
+  var scored = positions.map(function(pos) {
+    var c = buildCandidate(cardRect, noteW, noteH, pos, margin, vw, vh);
+    c.overlap = totalOverlap(c.rect, otherRects);
+    return c;
+  });
+  var perfect = scored.find(function(c) { return c.outside === 0 && c.overlap === 0; });
+  if (perfect) return perfect;
+  var inView = scored
+    .filter(function(c) { return c.outside === 0; })
+    .sort(function(a, b) { return a.overlap - b.overlap; })[0];
+  if (inView) return inView;
+  var noOverlap = scored
+    .filter(function(c) { return c.overlap === 0; })
+    .sort(function(a, b) { return a.outside - b.outside; })[0];
+  if (noOverlap) return noOverlap;
+  return scored.find(function(c) { return c.pos === 'top'; }) || scored[0];
+}
+function pickNoteText(card, state) {
+  if (state.noteText) return state.noteText;
+  var key = noteKey(card);
+  var pool = card.getAttribute('data-dummy') === '1' ? dummyNotes : researchNotes;
+  state.noteText = pool[hashNote(key + '-note') % pool.length];
+  return state.noteText;
+}
+function hideAllResearchNotes() {
+  document.querySelectorAll('.research-note').forEach(function(note) {
+    note.classList.remove('show');
+    note.classList.add('hide');
+    setTimeout(function() {
+      if (note.parentNode) note.parentNode.removeChild(note);
+    }, 240);
+  });
+}
 function hideNote(card) {
-  var note = card.querySelector('.research-note');
   var state = getNoteState(card);
+  var note = state.noteEl;
   state.hovering = false;
   clearNoteTimers(state);
-  if (!note) return;
+  if (!note || !note.parentNode) {
+    state.noteEl = null;
+    return;
+  }
   note.classList.remove('show');
   note.classList.add('hide');
   state.removeTimer = setTimeout(function() {
-    if (note.parentNode === card) card.removeChild(note);
+    if (note.parentNode) note.parentNode.removeChild(note);
+    if (state.noteEl === note) state.noteEl = null;
   }, 240);
 }
 function scheduleAutoHide(card) {
@@ -542,18 +636,28 @@ function showNote(card, keepOnHover) {
   var state = getNoteState(card);
   state.hovering = !!keepOnHover;
   clearNoteTimers(state);
-  var note = card.querySelector('.research-note');
+  var note = state.noteEl;
   if (!note) {
     note = document.createElement('div');
     note.className = 'research-note';
-    card.appendChild(note);
+    document.body.appendChild(note);
+    state.noteEl = note;
+  } else if (!note.parentNode) {
+    document.body.appendChild(note);
   }
   var key = noteKey(card);
-  var idx = noteIndexFor(card, state);
-  note.textContent = researchNotes[idx];
+  note.textContent = pickNoteText(card, state);
   note.style.setProperty('--note-r', ((hashNote(key + '-rot') % 9) - 4) + 'deg');
-  note.style.setProperty('--note-x', ((hashNote(key + '-x') % 21) - 10) + 'px');
+  note.style.visibility = 'hidden';
+  note.style.left = '-9999px';
+  note.style.top = '-9999px';
   note.classList.remove('hide');
+  note.classList.remove('show');
+  var rect = card.getBoundingClientRect();
+  var placement = choosePlacement(rect, note.offsetWidth, note.offsetHeight, key, note);
+  note.style.left = Math.round(placement.x) + 'px';
+  note.style.top = Math.round(placement.y) + 'px';
+  note.style.visibility = 'visible';
   requestAnimationFrame(function() { note.classList.add('show'); });
   scheduleAutoHide(card);
 }
@@ -570,6 +674,9 @@ document.querySelectorAll('.feat-card, .grid-card').forEach(function(card) {
     showNote(card, false);
   });
 });
+
+window.addEventListener('resize', hideAllResearchNotes);
+window.addEventListener('scroll', hideAllResearchNotes, { passive: true });
 
 document.querySelectorAll('.grid-card[data-url], .feat-card[data-url]').forEach(function(card) {
   card.addEventListener('click', function(e) {
