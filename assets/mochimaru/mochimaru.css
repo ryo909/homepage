@@ -1,0 +1,346 @@
+.mochimaru-root {
+  --mochi-paper: rgba(245, 240, 232, 0.96);
+  --mochi-ink: #2a2318;
+  --mochi-ink-soft: #6b5f48;
+  --mochi-accent: #e8a020;
+  --mochi-line: rgba(100, 80, 50, 0.2);
+  --mochi-shadow: 0 18px 42px rgba(0, 0, 0, 0.32);
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  z-index: 140;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: none;
+  font-family: "Courier Prime", monospace;
+}
+
+.mochimaru-root * {
+  box-sizing: border-box;
+}
+
+.mochimaru-root[data-theme="github"] {
+  --mochi-paper: rgba(255, 255, 255, 0.98);
+  --mochi-ink: #1f2328;
+  --mochi-ink-soft: #636e7b;
+  --mochi-line: rgba(31, 35, 40, 0.12);
+  --mochi-shadow: 0 20px 45px rgba(31, 35, 40, 0.14);
+}
+
+.mochimaru-live {
+  max-width: min(270px, calc(100vw - 32px));
+  background: var(--mochi-paper);
+  color: var(--mochi-ink);
+  border: 1px dashed var(--mochi-line);
+  border-radius: 18px;
+  padding: 10px 14px;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+  font-family: "Caveat", cursive;
+  font-size: 18px;
+  line-height: 1.25;
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  transition: opacity 0.2s ease, transform 0.22s ease;
+  pointer-events: none;
+}
+
+.mochimaru-live.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.mochimaru-panel {
+  width: min(340px, calc(100vw - 24px));
+  background: linear-gradient(180deg, rgba(255, 250, 238, 0.98), var(--mochi-paper));
+  color: var(--mochi-ink);
+  border: 1px solid rgba(232, 160, 32, 0.3);
+  border-radius: 22px;
+  box-shadow: var(--mochi-shadow);
+  overflow: hidden;
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+  visibility: hidden;
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+}
+
+.mochimaru-root[data-open="true"] .mochimaru-panel {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  visibility: visible;
+}
+
+.mochimaru-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 16px 10px;
+  border-bottom: 1px dashed var(--mochi-line);
+}
+
+.mochimaru-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mochimaru-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Caveat", cursive;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.mochimaru-mode {
+  width: fit-content;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(232, 160, 32, 0.14);
+  border: 1px solid rgba(232, 160, 32, 0.22);
+  font-family: "VT323", monospace;
+  font-size: 18px;
+  letter-spacing: 0.06em;
+  color: var(--mochi-ink-soft);
+}
+
+.mochimaru-mode[data-mode="full"] {
+  background: rgba(57, 211, 83, 0.12);
+  border-color: rgba(57, 211, 83, 0.24);
+  color: #1f6b2e;
+}
+
+.mochimaru-mode[data-mode="basic"] {
+  background: rgba(232, 160, 32, 0.12);
+}
+
+.mochimaru-mode[data-mode="checking"] {
+  background: rgba(44, 74, 124, 0.1);
+  border-color: rgba(44, 74, 124, 0.18);
+  color: #2c4a7c;
+}
+
+.mochimaru-close {
+  border: none;
+  background: transparent;
+  color: var(--mochi-ink-soft);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.mochimaru-panel-body {
+  display: grid;
+  gap: 14px;
+  padding: 14px 16px 16px;
+}
+
+.mochimaru-speech {
+  background: rgba(255, 255, 255, 0.54);
+  border: 1px dashed var(--mochi-line);
+  border-radius: 16px;
+  padding: 12px 14px;
+  min-height: 74px;
+}
+
+.mochimaru-speech-label {
+  display: block;
+  margin-bottom: 6px;
+  font-family: "VT323", monospace;
+  font-size: 17px;
+  letter-spacing: 0.08em;
+  color: var(--mochi-ink-soft);
+}
+
+.mochimaru-speech-text {
+  font-family: "Caveat", cursive;
+  font-size: 23px;
+  line-height: 1.22;
+}
+
+.mochimaru-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.mochimaru-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--mochi-ink-soft);
+}
+
+.mochimaru-toggle input {
+  accent-color: var(--mochi-accent);
+}
+
+.mochimaru-subcopy {
+  font-size: 12px;
+  color: var(--mochi-ink-soft);
+  line-height: 1.5;
+}
+
+.mochimaru-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mochimaru-action,
+.mochimaru-submit {
+  border: 1px solid rgba(232, 160, 32, 0.28);
+  background: rgba(255, 248, 230, 0.78);
+  color: var(--mochi-ink);
+  border-radius: 14px;
+  padding: 9px 12px;
+  font-family: "Caveat", cursive;
+  font-size: 18px;
+  line-height: 1.1;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.mochimaru-action:hover,
+.mochimaru-submit:hover,
+.mochimaru-dock:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 14px rgba(0, 0, 0, 0.14);
+}
+
+.mochimaru-ai {
+  display: none;
+  gap: 8px;
+}
+
+.mochimaru-root[data-mode="full"] .mochimaru-ai {
+  display: grid;
+}
+
+.mochimaru-ai-row {
+  display: flex;
+  gap: 8px;
+}
+
+.mochimaru-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--mochi-line);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--mochi-ink);
+  font-size: 13px;
+}
+
+.mochimaru-submit {
+  white-space: nowrap;
+}
+
+.mochimaru-footer-note {
+  font-size: 11px;
+  color: var(--mochi-ink-soft);
+  line-height: 1.5;
+}
+
+.mochimaru-dock {
+  pointer-events: auto;
+  position: relative;
+  width: min(112px, 26vw);
+  aspect-ratio: 1 / 1;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.mochimaru-shadow {
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: 9px;
+  height: 14px;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0.08) 60%, transparent 75%);
+  filter: blur(3px);
+}
+
+.mochimaru-body {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  animation: mochi-float 3.8s ease-in-out infinite;
+}
+
+.mochimaru-body img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.2));
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.mochimaru-root[data-speaking="true"] .mochimaru-body {
+  animation-duration: 2.3s;
+}
+
+.mochimaru-status-dot {
+  position: absolute;
+  top: 10px;
+  right: 8px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.25);
+  background: var(--mochi-accent);
+}
+
+.mochimaru-root[data-mode="full"] .mochimaru-status-dot {
+  background: #39d353;
+}
+
+.mochimaru-root[data-mode="checking"] .mochimaru-status-dot {
+  background: #2c4a7c;
+}
+
+.mochimaru-root[data-open="true"] .mochimaru-dock {
+  transform: translateY(-1px);
+}
+
+.mochimaru-panel-anchor {
+  display: contents;
+}
+
+@keyframes mochi-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@media (max-width: 720px) {
+  .mochimaru-root {
+    right: max(10px, env(safe-area-inset-right));
+    bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+
+  .mochimaru-panel {
+    width: min(320px, calc(100vw - 18px));
+  }
+
+  .mochimaru-dock {
+    width: min(92px, 25vw);
+  }
+
+  .mochimaru-shortcuts {
+    grid-template-columns: 1fr;
+  }
+}
